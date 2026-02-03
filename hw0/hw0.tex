@@ -83,7 +83,52 @@ In this class, we will be exploring the question of ``how do we model the trend 
 
 
 \begin{solution}
-	Your solution here.
+	\begin{enumerate}
+	    \item $y_1 = w_0 + w_1x_1$, $y_2 = w_0 + w_1x_2$\\
+        $y_1 - y_2 = w_1x_1 - w_1x_2$\\
+        $y_1 - y_2 = w_1(x_1 - x_2)$\\
+        $w_1 = \frac{y_1 - y_2}{x_1 - x_2}$.\\\\
+        $y_1 = w_0 + w_1x_1$\\
+        $w_0 = y_1 - w_1x_1$\\
+        $w_0 = y_1 - \frac{y_1 - y_2}{x_1 - x_2}x_1$\\
+        $w_0 = y_1 - \frac{x_1y_1 - x_1y_2}{x_1 - x_2}$\\
+        $w_0 = \frac{y_1x_1 - y_1x_2 - x_1y_1 + x_1y_2}{x_1 - x_2}$\\
+        $w_0 = \frac{x_1y_2 - y_1x_2}{x_1 - x_2}$\\\\
+        $x_1 \neq x_2$
+
+        \item $y_1 = w_0 + w_1x_1$\\ $y_2 = w_0 + w_1x_2$\\
+        $y = Xw$\\\\
+        $y = \begin{bmatrix}
+            y_1\\
+            y_2
+        \end{bmatrix}$
+        $X = \begin{bmatrix}
+            1\ x_1\\
+            1\ x_2
+        \end{bmatrix}$
+        $w = \begin{bmatrix}
+            w_0\\ w_1
+        \end{bmatrix}$
+
+        \item $w = X^{-1}y\ \rightarrow$ $X$ must be invertible $\ \rightarrow$ non-zero determinant\\
+        $det(X) = x_2 - x_1 \rightarrow$ $x_1 \neq x_2$ for a unique solution for $w$ to exist
+
+        \item $w = X^{-1}y$\\
+        $w = \frac{1}{x_2 - x_1} \begin{bmatrix}
+            x_2 & -x_1\\
+            -1 & 1
+        \end{bmatrix}y$\\
+        $w = \frac{1}{x_2 - x_1} \begin{bmatrix}
+            x_2y_1 & -x_1y_2\\
+            -y_1 & y_2
+        \end{bmatrix}$\\\\
+        $w_0 = \frac{y_1x_2 - x_1y_2}{x_2 - x_1}$
+        $w_1 = \frac{y_2 - y_1}{x_2 - x_1}$\\\\
+        One advantage seems to be that if you add more points, it becomes easier to solve the matrix notation rather than a system of multiple linear equations, because you can use the exact same method as here for arbitrary number of points.
+
+        \item It doesn't. We will always be able to exactly fit a line to two points as long as $x_1 \neq x_2$. But with more points, it might not be possible to fit them exactly on a line, and so there might not be a solution to the problem. Also, since the dimension of $X$ is $N \times 2$, $X^{-1}$ does not exist when $N > 2$ since $X$ isn't square, so we can't use the analytical expression.
+        \item See Jupyter notebook.
+	\end{enumerate}
 \end{solution}
 
 \color{black}
@@ -118,7 +163,19 @@ $$y = f(x_1, x_2) = \exp\left(-(x_1 - 2)^2 - (x_2 - 1)^2 \right)$$
 
 
 \begin{solution}
-	Your solution here.
+	\begin{enumerate}
+	    \item
+        The plot tells us that there is a unique maximum plant height. We can also tell from the fact that it's a quadratic function with a negative coefficient for the quadratic term, which means that the plot will be an upside-down U shape parabola, which means that there will be a single point that has a maximum $y$ value.\\
+        \includegraphics[width=0.75\linewidth]{img/2.1.png}\\
+        \item $y = -3x^2 + 72x +70$\\ 
+        $y' = -6x +72$\\\\
+        $y' = 0$\\
+        $-6x +72 = 0$\\
+        $x = 12$oz\\
+        $y = 502$mm
+    \item Since $f(x_1, x_2)$ is an exponential function with a positive base, it is largest when it's exponent is largest. We can rewrite $f(x_1, x_2) = \exp\left(-[(x_1 - 2)^2 + (x_2 - 1)^2] \right)$, noticing that the exponent can't be negative, so it's maximized at 0 when $x_1 = 2, x_2 = 1$. These yield the global maximum due to the nature of the function as described.\\
+    \includegraphics[width=0.75\linewidth]{img/2.3.png}
+	\end{enumerate}
 \end{solution}
 
 \newpage 
@@ -164,7 +221,38 @@ In this class, one of our main focuses is to model the unexpected variations in 
 \newpage
 
 \begin{solution}
-	Your solution here.
+	\begin{enumerate}
+	    \item \begin{enumerate}
+	        \item This is because Normal can take on any real value, and so with a non-zero probability, the outcome could be negative, but weight and size can't be negative.
+            \item The most likely combination of size and weight of a package is approximately by visual inspection is $119.5$ $in^3$ and $4$ $lbs$. That is very close theoretical expected size and expected weight of a  package, $120$ $in^3$ and $4$ $lbs$.\\
+            \includegraphics[width=0.75\linewidth]{img/3.1.png}
+	    \end{enumerate}
+        \item Comparing the two plots, it is clear that larger size indicates more weight due to the shift of the bell curve toward a larger mean weight between the two fixed sizes.\\
+        \includegraphics[width=0.75\linewidth]{img/3.2.png}
+        \item $T = 60 + 0.6 W + 0.2 S + \epsilon$\\
+        $E(T) = 60 + 0.6*4 + 0.2*120 + 0$\\
+        $E(T) = 86.4$\\\\
+        $Var(T) = Var(0.6 W + 0.2 S + \epsilon)$\\
+        $Var(T) = Var(0.6 W + 0.2 S) + Var(\epsilon)$\\
+        $Var(T) = 0.6^2 Var(W) + 0.2^2 Var(S) + 2*0.6*0.2*Cov(S, W) + 5)$\\
+        $Var(T) = 0.36*1.5 + 0.04*1.5 + 0.24*1 + 5)$\\
+        $Var(T) = 5.84$
+        \item We have $n$ independent packages, each of which has a probability of $P(W < 4)$ to be fragile. This is the binomial distribution. We know that:\\
+        $W \sim N(\mu, \sigma)$.
+        $W \sim N(4, 1.5)$.
+        $Z = \frac{W - \mu}{\sigma}$\\
+        $Z = \frac{W - 4}{\sqrt{1.5}}$\\\\
+        $P(W < 4) = P(W - 4 < 0)$\\
+        $P(W < 4) = P(\frac{W - 4}{\sqrt{1.5}} < 0)$\\
+        $P(W < 4) = P(Z < 0)$\\
+        $P(W < 4) = 0.5$\\\\
+        Let $F$ be the number of fragile packages in the $N$ that arrive today:\\
+        $F | (N = n) \sim Bin(n, 0.5)$.\\
+        $P(F = k | N = n) = {n \choose k}0.5^k0.5^{n-k} = {n \choose k}0.5^n$ for $k = 0, 1, ..., n$.
+        \item $\mu(T*) = 6212$ s\\
+        $\sigma(T*) = 739$ s\\
+        See notebook for code.
+	\end{enumerate} 
 \end{solution} 
 
 \newpage 
@@ -200,7 +288,23 @@ In this class, we will bridge theory and practice through implementing the metho
 \end{problem}
 
 \begin{solution}
-	Your solution here.
+	\begin{enumerate}
+	    \item His current code reads $x$ as the first row and $y$ as the second row, while they are both column vectors.\\
+        Yes, there appears to be a linear trend.\\
+        \includegraphics[width=0.75\linewidth]{img/4.1.png}
+        \item $np.hstack$ stacks two arrays column-wise. But since the $intercept$ and $x$ are 1-D arrays, it just stacks them on top of each other. We need to make them into column vectors, then apply $np.hstack$.\\
+        $X.shape$ is $(100, 2)$ and $y.shape$ is $(100,)$. There is no second coordinate for $y$ because it is a 1-D array.
+        \item We can derive the shape of $\hat w$ by looking at the dimensions of the equation:\\
+        $dim[(\bm X^\top \bm X)^{-1}] = 2 \times 2$\\
+        $dim(\bm X^\top \bm y) = 2 \times 1$\\
+        $d(\hat w) = 2 \times 1$, which we confirm by $\hat w = \begin{bmatrix}
+            w_0\\
+            w_1
+        \end{bmatrix}$.
+        \item He is using element-wise multiplication instead of matrix multiplication in the $fit$ method. He also uses wrong syntax for matrix inverse. He never stores $w$ in $fit$ method, and $predict$ needs to use the stored weights via $self.w$. He was also missing $X.T$ after the inverse. Also $y.T$ does nothing since it's a 1-D array, so it needs to be made into a column vector properly.\\
+        \includegraphics[width=0.75\linewidth]{img/4.4.png}
+        \item $MSE = \frac{1}{n}||y - \hat y||^2_2$
+	\end{enumerate}
 \end{solution}
 
 \end{document}
