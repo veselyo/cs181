@@ -206,16 +206,16 @@ dictates how quickly the kernel decays).
 % Problem 2
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{problem}[Geometric Least Squares, 20pts]
-    Linear regression can be understood using geometric intuition in $\mathbb{R}^n$. The design matrix $\mathbf X \in \mathbb{R}^{N\times D}$ spans a subspace $C(\mathbf X)$, the column space of $\mathbf X$ (referred to in lecture as column span) which is a subspace of $\mathbb{R}^N$. If you wish to review the concept of a column space, consider visiting Section 0 notes. \\
+    Linear regression can be understood using geometric intuition in $\mathbb{R}^n$. The design matrix $\mathbf X \in \mathbb{R}^{N\times D}$, with $N > D$, spans a subspace $C(\mathbf X)$, the column space of $\mathbf X$ (referred to in lecture as column span) which is a subspace of $\mathbb{R}^N$. If you wish to review the concept of a column space, consider visiting Section 0 notes. \\
     
     \noindent Fitting by linear regression, sometimes called \textit{ordinary least-squares} (OLS), is just projecting the observation vector $\mathbf y \in \mathbb{R}^N$ orthogonally onto that subspace. Lecture 2 slides provide a good graphic to visualize this, see the slide titled ``Geometric Interpretation.'' From lecture, we also learned that $\hat {\mathbf y}$ lives in $C(\mathbf X)$ and the residual $\mathbf r = {\mathbf y} - \hat {\mathbf y}$ lives in the orthogonal complement.
 
     \begin{enumerate}
-    \item Let $\mathbf X \in \mathbb{R}^{N\times D}$ have full column rank $d$ and $\mathbf y \in \mathbb{R}^N$. Let the OLS estimator be $\mathbf w^*=(\mathbf X^\top \mathbf X)^{-1} X^\top \mathbf y$ and the fitted vector $\mathbf y = \mathbf X \mathbf w^*$. Prove that $\hat {\mathbf y}$ is the \textit{orthogonal projection} of $y$ onto $C(\mathbf X)$. In other words, show that $\hat {\mathbf y} \in C(\mathbf X)$ and $\mathbf y - \hat {\mathbf y}$ is orthogonal to $C(\mathbf X)$. \textit{Hint: To show orthogonality, look at the gradient of $\mathcal L$, the loss, with respect to $\mathbf w$}.
+    \item Let $\mathbf X \in \mathbb{R}^{N\times D}$ have full column rank $d$ and $\mathbf y \in \mathbb{R}^N$. Let the OLS estimator be $\mathbf w^*=(\mathbf X^\top \mathbf X)^{-1} X^\top \mathbf y$ and the fitted vector $\mathbf{\hat{y}} = \mathbf X \mathbf w^*$. Prove that $\hat {\mathbf y}$ is the \textit{orthogonal projection} of $y$ onto $C(\mathbf X)$. In other words, show that $\hat {\mathbf y} \in C(\mathbf X)$ and $\mathbf y - \hat {\mathbf y}$ is orthogonal to $C(\mathbf X)$. \textit{Hint: To show orthogonality, look at the gradient of $\mathcal L$, the loss, with respect to $\mathbf w$}.
 
     \item Prove that among all vectors in $C(\mathbf X)$, the fitted vector $\hat {\mathbf y}$ minimizes the Euclidean distance to $\mathbf y$. In other words, that for every vector $\mathbf v \in C(\mathbf X)$:
     \begin{equation*}
-        \|\mathbf y - \hat {\mathbf y}\|_2^2 \leq \|\mathbf y - \mathbf v\|_2
+        \|\mathbf y - \hat {\mathbf y}\|_2^2 \leq \|\mathbf y - \mathbf v\|_2^2
     \end{equation*}
     Looking back at lecture, this is the formal proof of the phenomenon discussed in the image. \textit{Hint: For two vectors, $\mathbf v,\mathbf w$, if $\mathbf v$ is orthogonal to $\mathbf w$, denoted as $\mathbf v \perp \mathbf w$, then $\|\mathbf v-\mathbf w\|^2_2 = \|\mathbf v\|_2^2+\|\mathbf w\|^2_2$ (Pythagorean theorem).}
 
