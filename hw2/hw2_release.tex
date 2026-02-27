@@ -197,10 +197,11 @@ times when we are likely to detect the planet.
         In general, all models are not much better than a random $0/1$ prediction.
         \item The variance would decrease for all 3 bases, as more data points means each individual model is trained on a more representative sample, and so their predictions would agree more, as they would all be closer to the best possible fit for the particular basis. The bias would be unchanged for all bases as no matter how many data points you have, bias can only be changed through having a more expressive model in basis regression.
         \item Classification probabilities for $t = 0.1: 0.496, t = 3.2: 0.486$. Model variances for $t = 0.1: 0.00023, t = 3.2: 0.00036$.\\
-        The classification probability is very uncertain at both $t = 0.1$ and $t = 3.2$. This should represent uncertainty in the true process; at those points, it should be equally likely that the planet will be observed or not due to its positioning around the star. This is not true for either of those times though; $t = 3.2$ should be closer to $0.3$, and $t = 0.1$ should be close to $0.7$ as seen in the true model. This is due to the poor performance of the model, mainly because the learning rate is too low and so it doesn't allow the trained models to make big enough steps in GD towards the true process.\\
+        The classification probability is very uncertain at both $t = 0.1$ and $t = 3.2$. This should represent uncertainty in the true process; at those points, it should be equally likely that the planet will be observed or not due to its positioning around the star. This is not true for either of those times though; $t = 3.2$ should be closer to $0.3$, and $t = 0.1$ should be close to $0.7$ as seen in the true model. This is due to the poor performance of the model.\\
         The variance is very low at both $t = 0.1$ and $t = 3.2$, and this low uncertainty is due to the fact that all 10 models agree with each other at those points, so the data is consistent across all folds there.
-        \item I plotted how the proportion of observations changes for each of the telescope data. As we can see, for the original telescope, there is a clear periodic pattern, which is what we saw with the true process; the likelihood changes with the position of the planet. The alternative data shows no such pattern; it shows as if there was always ~0.6 chance we will observe planet, no matter its position. So, an appropriate model for that data should be just predict we observe with 60\% probability. It is not a reasonable ask to refit the model to this new data, because it gives us no information about when is a best time to view the planet.\\
-        \includegraphics[]{hw}
+        \item I plotted how the proportion of observations changes for each of the telescope data. As we can see, for the original telescope, there is a clear periodic pattern, which is what we saw with the true process; the likelihood changes with the position of the planet. The alternative data shows no such pattern; it shows as if there was always ~0.6 chance we will observe planet, no matter its position. So, an appropriate model for that data should be just predict we observe with 60\% probability. It is not a reasonable ask to refit the model to this new data, because it gives us no information about when is a best time to view the planet. This is most likely due to bad conditions of viewing or different location.\\
+        \includegraphics[width = \linewidth]{hw2/img_output/1.6.png}\\
+        \item basis1 average error (10-fold): 0.493, basis2 average error (10-fold): 0.367, basis3 average error (10-fold): 0.287. This perfectly agrees with what we saw earlier. The linear model is no better than a random guess, as it's bias is too high. The polynomial model is better, as it can capture the relationship a little better. The third basis is the best as it can capture oscillation, and that's why it's the best. 
 	\end{enumerate}
 \end{solution}
 
@@ -287,7 +288,51 @@ These formulas are from the matrix cookbook linked here: \href{https://www.math.
 \newpage
 
 \begin{solution}
-	Your solution here.
+	\begin{enumerate}
+	    \item $$p(\mathcal{D} ; \pi) = \prod_{i = 1}^np(x_i, y_i;\pi) = ,\text{since data points are independent}$$
+        $$ = \prod_{i = 1}^np(x_i| y_i)p(y_i;\pi)=$$
+        $$ = \prod_{i = 1}^n[p(x_i| y_i)y_i^T\pi], \text{since $y_i$ is one-hot}$$
+        $$\ln p(\mathcal{D} ; \pi) = \sum_{i = 1}^n[\ln p(x_i| y_i) + y_i^T\ln \pi]$$
+        \item $$\ln p(\mathcal{D} ; \pi) = \sum_{i = 1}^n[\ln p(x_i| y_i) + y_i^T\ln \pi] \propto \sum_{i = 1}^n y_i^T\ln \pi, \text{since first term doesn't depend on $\pi$}$$
+        $$L(\pi, \lambda) = \sum_{i = 1}^n y_i^T\ln \pi +  \lambda (\sum_k\pi_k - 1)$$
+        $$\frac{\partial L(\pi, \lambda)}{\partial  \pi} = 0$$
+        $$\frac{\sum_{i = 1}^n y_i}{\pi} +  \lambda= 0$$
+        $$\pi = -\frac{\sum_{i = 1}^n y_i}{\lambda}$$
+        $$\frac{\partial L(\pi, \lambda)}{\partial \lambda} = 0$$
+        $$\sum_k\pi_k - 1 = 0$$
+        $$1^T\pi - 1 = 0$$
+        $$-\frac{\sum_{i = 1}^n1^T y_i}{\lambda} - 1 = 0$$
+        $$-\frac{\sum_{i = 1}^n1}{\lambda} - 1 = 0$$
+        $$-\frac{n}{\lambda} - 1 = 0$$
+        $$\lambda = -n$$
+        $$\hat \pi = \frac{\sum_{i = 1}^n y_i}{n}$$
+        $$\hat \pi_k = \frac{\sum_{i = 1}^n y_{ik}}{n}$$
+        So, each $\hat \pi_k$ is just the fraction of points that belong to class $k$. This intuitively makes sense, as our best estimate of the prior that a point belongs to class $k$ is just how often class $k$ appeared in the training data. This agrees with what we learned in lecture.
+        \item $$\ln p(\mathcal{D} ; \pi) = \sum_{i = 1}^n[\ln p(x_i| y_i) + y_i^T\ln \pi] =$$
+        $$= \sum_{i = 1}^n[\sum_{k = 1}^Ky_{ik}\ln N(x_i|\mu_k, \Sigma) + y_i^T\ln \pi] =$$
+        $$\frac{\partial \ln p(\mathcal{D} ; \pi)}{\partial \mu_k} = \frac{\partial }{\partial \mu_k} \sum_{i = 1}^n\sum_{k' = 1}^Ky_{ik'}\ln N(x_i|\mu_{k'}, \Sigma)= $$
+        $$= \frac{\partial }{\partial \mu_k} \sum_{i = 1}^ny_{ik}\ln N(x_i|\mu_{k}, \Sigma)=, \text{since all $k' \neq k$ get dropped}$$
+        $$= \frac{\partial }{\partial \mu_k} \sum_{i = 1}^ny_{ik}[-\frac{1}{2}(x_i - \mu_k)^T\Sigma^{-1}(x_i - \mu_k)]=, \text{dropping all constant terms in the Gaussian log}$$
+        $$= \sum_{i = 1}^ny_{ik}\Sigma^{-1}(x_i - \mu_k)=$$
+        $$= \Sigma^{-1}\sum_{i = 1}^ny_{ik}(x_i - \mu_k)=$$
+        $$= \Sigma^{-1}(\sum_{i = 1}^ny_{ik}x_i - \mu_k\sum_{i = 1}^ny_{ik})=$$
+        $$= \Sigma^{-1}(X^Ty_k - \mu_k1^Ty_k), \text{where $y_k$ is the $k$-th column of $Y$}$$
+        \item $$\frac{\partial \ln p(\mathcal{D} ; \pi)}{\partial \mu_k} = 0$$
+        $$ \Sigma^{-1}(X^Ty_k - \mu_k1^Ty_k) = 0, \text{since $\Sigma^{-1}$ invertible}$$
+        $$X^Ty_k - \mu_k1^Ty_k = 0$$
+        $$\hat \mu_k = \frac{X^Ty_k}{1^Ty_k}$$
+        Which is just the sample mean of all data points belonging to class $k$. This makes sense, as $p(x|y=C_k) \sim N(x|\mu_k, \Sigma)$, and so the best estimate for $\mu_k$ is the average of the observed data points from class $k$.
+        \item $$\frac{\partial \ln p(\mathcal{D} ; \pi)}{\partial \Sigma} =\frac{\partial }{\partial \Sigma} \sum_{i = 1}^n\sum_{k = 1}^Ky_{ik}\ln N(x_i|\mu_{k}, \Sigma)=$$
+        $$=\frac{\partial }{\partial \Sigma} \sum_{i = 1}^n\sum_{k = 1}^Ky_{ik}[-\frac{1}{2}\ln |\Sigma| - \frac{1}{2}(x_i - \mu_k)^T\Sigma^{-1}(x_i - \mu_k)]=$$
+        $$=\frac{\partial }{\partial \Sigma} [-\frac{n}{2}\ln |\Sigma| \sum_{i = 1}^n\sum_{k = 1}^Ky_{ik}[- \frac{1}{2}(x_i - \mu_k)^T\Sigma^{-1}(x_i - \mu_k)]]=$$
+        $$=-\frac{n}{2}\Sigma^{-T} +  \frac{1}{2}\sum_{i = 1}^n\sum_{k = 1}^Ky_{ik}\Sigma^{-T}(x_i - \mu_k)(x_i - \mu_k)^T\Sigma^{-T}=$$
+        $$=\frac{1}{2}\Sigma^{-T} (\sum_{i = 1}^n\sum_{k = 1}^Ky_{ik}(x_i - \mu_k)(x_i - \mu_k)^T - n\Sigma)\Sigma^{-T}=$$
+        $$=\frac{1}{2}\Sigma^{-1} (\sum_{i = 1}^n\sum_{k = 1}^Ky_{ik}(x_i - \mu_k)(x_i - \mu_k)^T - n\Sigma)\Sigma^{-1}, \text{since $\Sigma$ is symmetric.}$$
+        \item $$\frac{\partial \ln p(\mathcal{D} ; \pi)}{\partial \Sigma} = 0$$
+        $$\frac{1}{2}\Sigma^{-1} (\sum_{i = 1}^n\sum_{k = 1}^Ky_{ik}(x_i - \mu_k)(x_i - \mu_k)^T - n\Sigma)\Sigma^{-1} = 0$$
+        $$\sum_{i = 1}^n\sum_{k = 1}^Ky_{ik}(x_i - \mu_k)(x_i - \mu_k)^T - n\Sigma = 0$$
+        $$\hat \Sigma = \frac{1}{n}\sum_{i = 1}^n\sum_{k = 1}^Ky_{ik}(x_i - \hat \mu_k)(x_i - \hat \mu_k)^T$$
+	\end{enumerate}
 \end{solution}
 
 \newpage
@@ -433,7 +478,7 @@ Try not to touch anything that is not in between ``\textit{sol}" and ``\textit{l
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \pagebreak
-\textbf{Name}:
+\textbf{Name}: Ondrej Vesely
 
 \textbf{Collaborators and Resources}: 
 
