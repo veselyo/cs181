@@ -404,7 +404,21 @@ After implementing the above classifiers, complete the following exercises:
 \newpage
 
 \begin{solution}
-	Your solution here.
+	\begin{enumerate}
+	    \item \ \\ \includegraphics[width = 0.5\linewidth]{hw2/img_output/Gaussian Generative Classifier - Shared Covariance.png} \includegraphics[width = 0.5\linewidth]{hw2/img_output/Gaussian Generative Classifier - Seperate Covariance.png} \\
+        \includegraphics[width = 0.5\linewidth]{hw2/img_output/Softmax Regression.png} \includegraphics[width = 0.5\linewidth]{hw2/img_output/Softmax Regression - Feature Map.png} \\ \includegraphics[width = 0.5\linewidth]{hw2/img_output/KNN Classifier - k = 1.png} \includegraphics[width = 0.5\linewidth]{hw2/img_output/KNN Classifier - k = 5.png}\\
+        The similarities are that almost all classifiers agree that low debt to income ratio and high credit score leads to acceptance, opposite to rejection, and something in between requires a guarantor. \\
+        For differences, GGC with separate covariance, which doesn't really have a clear guarantor case and in its place is automatic rejection except for a small part of the graph. Both GGC with separate covariance and softmax reg with feature map have a part of the graph where low credit score and high debt to income ratio predicts guarantor, which should be automatic rejection. Softmax Reg w Feature Map, KNN = 5, and GGC w sep cov. automatically accept in low CS, high DtI ratio.\\
+        GGC with shared cov's decision boundary shape is dictated by the shared covariance forcing all Gaussians to have identical shape with only centers differing, leading to linear boundaries.\\
+        GGC with separate cov's decision boundary shape is dictated by the separate covariance allowing all Gaussians to have their own shape, leading to curved boundaries where the Gaussians are equally likely.\\
+        Softmax Reg has linear boundaries because it computes linear scores, and softmax picks the highest score of those for the prediction.\\
+        Softmax Reg w Feature map has curved boundaries because it computes scores in log and quadratic transformed space, and softmax creates linear boundaries in that space, which is non-linear in original space.\\
+        KNN just uses the training data's nearest neighbors to create boundaries, and so they are curved spaces around the clusters for each class. KNN with k=5 allows more automatic accepts in places it shouldn't due to more training points of automatic accepts being more clustered together and automatic rejections being more spread out.
+        \item Model a) prediction: [0], Model b) prediction: [0], Model c) prediction: [0], Model d) prediction: [1], KNN k=1 prediction: [0], KNN k=5 prediction: [0], Model c) probabilities: [[1. 0. 0.]], Model d) probabilities: [[0.254 0.659 0.087]].\\
+        When making predictions on a point "far" from our training data, we must consider that the more complex models can produce undesired results in spaces outside of training data because of how their nonlinear boundaries can extend into those regions, like for model d). Since all models compute a score and then assign a probability, the distance from training data is not reflected in the prediction, so high confidence can be misleading if there is no data to support it.
+        \item The problematic ethical aspect of such classifier is not accounting for social inequalities. For example, migrants and other minorities might not have as good access to credit as the general population, which puts them at a disadvantage. Special circumstances of a recent crisis despite ability to repay loan is also not reflected in this model. And more generally, training on past decisions, if they were biased, means that we translate this bias into our future predictions, so we have to be careful there.
+        
+	\end{enumerate}
 \end{solution}
 
 \newpage
@@ -469,7 +483,17 @@ Try not to touch anything that is not in between ``\textit{sol}" and ``\textit{l
 \pagebreak
 
 \begin{solution}
-	Your solution here.
+	\begin{enumerate}
+	    \item $$\mathcal L(\mathbf w) = \frac{1}{2} \|\mathbf X\mathbf w - \mathbf y\|_2^2$$
+        $$\nabla_{\mathbf w} \mathcal L(\mathbf w) = X^T(\mathbf X\mathbf w - \mathbf y)$$
+        \item $$w^{t+1} = w^t - \eta\nabla_{\mathbf w} \mathcal L(\mathbf w^t)$$
+        $$w^{t+1} = w^t - \eta X^T(\mathbf X\mathbf w ^t- \mathbf y)$$
+        \item $$\mathcal L_\text{ridge}(\mathbf w) = \frac{1}{2} \|\mathbf X\mathbf w - \mathbf y\|_2^2 + \frac{\lambda}{2} \|\mathbf w\|_2^2$$
+        $$\nabla_{\mathbf w}\mathcal L_\text{ridge}(\mathbf w) = X^T(\mathbf X\mathbf w ^t- \mathbf y) + \lambda w$$
+        \item $$w^{t+1} = w^t - \eta X^T(\mathbf X\mathbf w ^t- \mathbf y) - \eta\lambda w^t$$
+        $$w^{t+1} = (1 - \eta \lambda)w^t - \eta X^T(\mathbf X\mathbf w ^t- \mathbf y)$$
+        Since $\eta>0, \lambda>0$, the update first shrinks the previous weights by a factor of $\lambda \eta$, and then applies the same gradient step update as we saw in the non-regularized version.
+	\end{enumerate}
 \end{solution}
 
 
