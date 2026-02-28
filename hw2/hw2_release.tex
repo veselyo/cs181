@@ -493,7 +493,9 @@ Try not to touch anything that is not in between ``\textit{sol}" and ``\textit{l
         \item $$w^{t+1} = w^t - \eta X^T(\mathbf X\mathbf w ^t- \mathbf y) - \eta\lambda w^t$$
         $$w^{t+1} = (1 - \eta \lambda)w^t - \eta X^T(\mathbf X\mathbf w ^t- \mathbf y)$$
         Since $\eta>0, \lambda>0$, the update first shrinks the previous weights by a factor of $\lambda \eta$, and then applies the same gradient step update as we saw in the non-regularized version.
-        \item[6.] \ \\ \includegraphics[width = \linewidth]{hw2/img_output/4.6.png}
+        \item[6.] \ \\ \includegraphics[width = \linewidth]{hw2/img_output/4.6.png}\\
+        As we can see in the top row, due to the highly correlated features, there isn't a clear optimal solution that the algorithm can converge to, but rather a valley of equally good solutions. The algorithms converge to that valley in similar speed; SGD takes small steps towards optimum, Momentum overshoots the most but converges, Adam overshoots less since it slows down past large gradients and boosts small ones.\\
+        Due to ridge's penalization of large weights, the previously equally good solutions with larger magnitudes become worse, which makes the gradient space become a bowl rather than a valley, with a clear direction to the optimal solution. SGD takes small steps towards it as expected. Momentum overshoots like we saw in Linear and doesn't converge within the given period. Adam converges in fewest steps, as it is able to take large steps when it's far away, and smaller steps when it's closer.
 	\end{enumerate}
 \end{solution}
 
