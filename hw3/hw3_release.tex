@@ -219,19 +219,30 @@ an inner product in some feature space: $K(\boldx, \boldx') =
 
 \begin{solution}
 	\begin{enumerate}
-	    \item \begin{enumerate}
-	        \item $$(1 + x_1 x_1' + x_2 x_2')^2 = 1 + (x_1x_1')^2 + (x_2x_2')^2 + 2x_1x_1' + 2x_2x_2' + 2x_1x_1'x_2x_2'$$\\
-            $$K(x, x') = \phi(x)^T\phi(x')$$
-            $$\phi(x) = \begin{bmatrix} 1 \\ x_1^2 \\ x_2^2 \\ \sqrt{2}x_1 \\ \sqrt{2}x_2 \\ \sqrt{2}x_1x_2 \end{bmatrix}$$
-            \item $$x = (1,0), x' = (1, 1)$$ 
-            $$K(x, x') = (1 + x^Tx')^2 = (1 + \begin{bmatrix} 1 & 0  \end{bmatrix} \begin{bmatrix} 1\\ 1  \end{bmatrix})^2 = (1 +1)^2 = 4$$
-            $$\phi(x)^T\phi(x') = \begin{bmatrix} 1 & x_1^2 & x_2^2 & \sqrt{2}x_1 & \sqrt{2}x_2 & \sqrt{2}x_1x_2 \end{bmatrix}\begin{bmatrix} 1 \\ x_1'^2 \\ x_2'^2 \\ \sqrt{2}x_1' \\ \sqrt{2}x_2' \\ \sqrt{2}x_1'x_2' \end{bmatrix} = $$ $$= \begin{bmatrix} 1 & 1 & 0 & \sqrt{2} & 0 & 0 \end{bmatrix} \begin{bmatrix} 1 \\ 1 \\ 1 \\ \sqrt{2} \\ \sqrt{2} \\ \sqrt{2} \end{bmatrix} = 1 + 1 + 0  + 2 + 0 + 0 = 4$$
-	    \end{enumerate}
-        \item \begin{enumerate}
-            \item The data are clearly not linearly separable as we can see from the plot that no line can perfectly separate the classes. We would need a circle boundary which is not linear. \\ $$\includegraphics[width = 0.5 \linewidth]{hw3/img_output/1.2a.png}$$
-            \item The data is now linearly separable in the feature space after applying the feature map, as a horizontal plane at some $x_1^2 + x_2^2 = c$ threshold can fully separate the classes. It helps for concentric circles because it adds a third dimension in which high radius will have large values and small radius small values, which allows for easy separation in the new space. $$\includegraphics[width = \linewidth]{hw3/img_output/1.2b.png}$$
-            \item 
-        \end{enumerate}
+	    \item 
+            \begin{enumerate}
+    	        \item $$(1 + x_1 x_1' + x_2 x_2')^2 = 1 + (x_1x_1')^2 + (x_2x_2')^2 + 2x_1x_1' + 2x_2x_2' + 2x_1x_1'x_2x_2'$$\\
+                $$K(x, x') = \phi(x)^T\phi(x')$$
+                $$\phi(x) = \begin{bmatrix} 1 \\ x_1^2 \\ x_2^2 \\ \sqrt{2}x_1 \\ \sqrt{2}x_2 \\ \sqrt{2}x_1x_2 \end{bmatrix}$$
+                \item $$x = (1,0), x' = (1, 1)$$ 
+                $$K(x, x') = (1 + x^Tx')^2 = (1 + \begin{bmatrix} 1 & 0  \end{bmatrix} \begin{bmatrix} 1\\ 1  \end{bmatrix})^2 = (1 +1)^2 = 4$$
+                $$\phi(x)^T\phi(x') = \begin{bmatrix} 1 & x_1^2 & x_2^2 & \sqrt{2}x_1 & \sqrt{2}x_2 & \sqrt{2}x_1x_2 \end{bmatrix}\begin{bmatrix} 1 \\ x_1'^2 \\ x_2'^2 \\ \sqrt{2}x_1' \\ \sqrt{2}x_2' \\ \sqrt{2}x_1'x_2' \end{bmatrix} = $$ $$= \begin{bmatrix} 1 & 1 & 0 & \sqrt{2} & 0 & 0 \end{bmatrix} \begin{bmatrix} 1 \\ 1 \\ 1 \\ \sqrt{2} \\ \sqrt{2} \\ \sqrt{2} \end{bmatrix} = 1 + 1 + 0  + 2 + 0 + 0 = 4$$
+	       \end{enumerate}
+        \item 
+            \begin{enumerate}
+                \item The data are clearly not linearly separable as we can see from the plot that no line can perfectly separate the classes. We would need a circle boundary which is not linear. \\ $$\includegraphics[width = 0.5 \linewidth]{hw3/img_output/1.2a.png}$$
+                \item The data is now linearly separable in the feature space after applying the feature map, as a horizontal plane at some $x_1^2 + x_2^2 = c$ threshold can fully separate the classes. It helps for concentric circles because it adds a third dimension in which high radius will have large values and small radius small values, which allows for easy separation in the new space. $$\includegraphics[width = \linewidth]{hw3/img_output/1.2b.png}$$
+                \item  $$\includegraphics[width = 0.5 \linewidth]{hw3/img_output/1.2c.png}$$
+            \end{enumerate}
+        \item 
+            \begin{enumerate}
+                \item $$\text{define }w = \Phi^T\alpha, \text{use identities } \Phi^T\Phi = K, y = (K + \lambda I)\alpha$$
+                $$(\Phi^T\Phi + \lambda I)w = (\Phi^T\Phi + \lambda I)\Phi^T\alpha =$$
+                $$= \Phi^T\Phi\Phi^T\alpha + \lambda I\Phi^T\alpha = $$
+                $$= \Phi^TK\alpha + \lambda I\Phi^T\alpha = $$
+                $$ = \Phi^T(K + \lambda I)\alpha = \Phi^Ty, \text{showing that $w$ satisfies the ridge regression normal equations}$$
+                \item 
+            \end{enumerate}
 	\end{enumerate}
 \end{solution}
 
