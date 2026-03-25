@@ -227,7 +227,10 @@ an inner product in some feature space: $K(\boldx, \boldx') =
             $$K(x, x') = (1 + x^Tx')^2 = (1 + \begin{bmatrix} 1 & 0  \end{bmatrix} \begin{bmatrix} 1\\ 1  \end{bmatrix})^2 = (1 +1)^2 = 4$$
             $$\phi(x)^T\phi(x') = \begin{bmatrix} 1 & x_1^2 & x_2^2 & \sqrt{2}x_1 & \sqrt{2}x_2 & \sqrt{2}x_1x_2 \end{bmatrix}\begin{bmatrix} 1 \\ x_1'^2 \\ x_2'^2 \\ \sqrt{2}x_1' \\ \sqrt{2}x_2' \\ \sqrt{2}x_1'x_2' \end{bmatrix} = $$ $$= \begin{bmatrix} 1 & 1 & 0 & \sqrt{2} & 0 & 0 \end{bmatrix} \begin{bmatrix} 1 \\ 1 \\ 1 \\ \sqrt{2} \\ \sqrt{2} \\ \sqrt{2} \end{bmatrix} = 1 + 1 + 0  + 2 + 0 + 0 = 4$$
 	    \end{enumerate}
-        \item 
+        \item \begin{enumerate}
+            \item The data are clearly not linearly separable as we can see from the plot that no line can perfectly separate the classes. We would need a circle boundary which is not linear. \\ $$\includegraphics[width = 0.5 \linewidth]{hw3/img_output/1.2a.png}$$
+            \item $$\includegraphics[width = 0.5 \linewidth]{hw3/img_output/1.2b.png}$$
+        \end{enumerate}
 	\end{enumerate}
 \end{solution}
 
