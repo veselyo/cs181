@@ -218,7 +218,17 @@ an inner product in some feature space: $K(\boldx, \boldx') =
 \newpage
 
 \begin{solution}
-	Your solution here.
+	\begin{enumerate}
+	    \item \begin{enumerate}
+	        \item $$(1 + x_1 x_1' + x_2 x_2')^2 = 1 + (x_1x_1')^2 + (x_2x_2')^2 + 2x_1x_1' + 2x_2x_2' + 2x_1x_1'x_2x_2'$$\\
+            $$K(x, x') = \phi(x)^T\phi(x')$$
+            $$\phi(x) = \begin{bmatrix} 1 \\ x_1^2 \\ x_2^2 \\ \sqrt{2}x_1 \\ \sqrt{2}x_2 \\ \sqrt{2}x_1x_2 \end{bmatrix}$$
+            \item $$x = (1,0), x' = (1, 1)$$ 
+            $$K(x, x') = (1 + x^Tx')^2 = (1 + \begin{bmatrix} 1 & 0  \end{bmatrix} \begin{bmatrix} 1\\ 1  \end{bmatrix})^2 = (1 +1)^2 = 4$$
+            $$\phi(x)^T\phi(x') = \begin{bmatrix} 1 & x_1^2 & x_2^2 & \sqrt{2}x_1 & \sqrt{2}x_2 & \sqrt{2}x_1x_2 \end{bmatrix}\begin{bmatrix} 1 \\ x_1'^2 \\ x_2'^2 \\ \sqrt{2}x_1' \\ \sqrt{2}x_2' \\ \sqrt{2}x_1'x_2' \end{bmatrix} = $$ $$= \begin{bmatrix} 1 & 1 & 0 & \sqrt{2} & 0 & 0 \end{bmatrix} \begin{bmatrix} 1 \\ 1 \\ 1 \\ \sqrt{2} \\ \sqrt{2} \\ \sqrt{2} \end{bmatrix} = 1 + 1 + 0  + 2 + 0 + 0 = 4$$
+	    \end{enumerate}
+        \item 
+	\end{enumerate}
 \end{solution}
 
 \newpage
