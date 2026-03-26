@@ -241,7 +241,27 @@ an inner product in some feature space: $K(\boldx, \boldx') =
                 $$= \Phi^T\Phi\Phi^T\alpha + \lambda I\Phi^T\alpha = $$
                 $$= \Phi^TK\alpha + \lambda I\Phi^T\alpha = $$
                 $$ = \Phi^T(K + \lambda I)\alpha = \Phi^Ty, \text{showing that $w$ satisfies the ridge regression normal equations}$$
-                \item 
+                \item $$\includegraphics[width = 0.5 \linewidth]{hw3/img_output/1.3b.png}$$
+                \item The points of class 1 have larger $|\alpha_n|$ in general than points of class 0. This is because they are more spread out, and so the model needs to put a larger weight on each individual point for predicting the right label for a new point. In comparison with more clustered points, the weight can be smaller since there will be many points close by to influence the label prediction.\\
+                The points of each class closer to the boundary (class 0 - outer edge, class 1 - inner edge) have larger $|\alpha_n|$ because they have neighbors from the opposite class nearby, and so the model needs larger $|\alpha_n|$ for such points to resolve the label disagreement and correctly fit their label.
+                \item It would be the inner edge of class 1 points and outer edge of class 0 points that would be support vectors, which also have larger weight than others as previously explained. If most points have weight 0, we don't have to compute the kernel similarities for those points, so it's more efficient. It's also for robustness, since points far from the boundary carry no information about where it is, and so it is more robust for only those that carry such information to have weights.
+            \end{enumerate}
+        \item 
+            \begin{enumerate}
+                \item $$K(x, x') = \exp\!\left(-\frac{\|x - x'\|^2}{2\sigma^2}\right) =$$
+                $$= \exp\!\left(-\frac{\|x||^2 - 2x^Tx' + ||x'\|^2}{2\sigma^2}\right)  = $$
+                $$= \exp (-\frac{||x||^2}{\sigma^2}) * \exp (\frac{x^Tx'}{\sigma^2}) * \exp (-\frac{||x'||^2}{\sigma^2})$$
+                \item $$\exp (\frac{x^Tx'}{\sigma^2}) = \sum_{k = 0}^\infty \frac{1}{k!}(\frac{x^Tx'}{\sigma^{2}})^k = \sum_{k = 0}^\infty \frac{(x^Tx')^k}{k! * \sigma^{2k}}$$
+                \item The Taylor series shows that it sums polynomial kernels of all degrees, and so $\phi(x)$ would have infinitely many components, which is impossible to compute, and the kernel trick allows us to bypass that by computing $K(x, x')$ directly as a scalar.
+                \item As $\sigma \rightarrow 0,$
+                $$K(x, x') \rightarrow \begin{cases} 0, & \text{if }x \neq x' \text{since } ||x - x'||^2 > 0 \\
+                1, & \text{if }x = x'\end{cases} = I$$\\
+                $$\text{We have }f(x^*) = \sum_{n=1}^N \alpha_n \, K(x_n, x^*).$$\\
+                For any $x^*$ outside the training set, we have $f(x^*) \rightarrow 0$ since all $K(x_n, x^*) \rightarrow 0$.\\
+                For any training point $x^* = x_i$, we have $f(x_i) \rightarrow \alpha_i.$ We have $\alpha = (K + \lambda I)^{-1}y \rightarrow (I + \lambda I)^{-1}y = \frac{y}{1 + \lambda}.$ So, $f(x_i) \rightarrow \frac{y_i}{1 + \lambda}$. Assuming $y_i \in \{-1,1\}$, since $\lambda \geq 0$, model will always classify correctly since $y_i$ is the true label and the sign stays the same.
+                \item As $\sigma \rightarrow \infty,$
+                $$K(x, x') \rightarrow 1 \text{ for any }x, x'$$
+                $$f(x^*) = \sum_n \alpha_n K(x_n, x^*) \rightarrow\sum_n \alpha_n, \text{which is constant, so always same output}$$
             \end{enumerate}
 	\end{enumerate}
 \end{solution}
@@ -346,7 +366,74 @@ where $\hat{y}$ is a scalar output of the net when passing in the single datapoi
 \end{framed}
 
 \begin{solution}
-	Your solution here.
+	\begin{enumerate}
+	    \item 
+            $$\hat{y} = \sigma({W}_2 \left[\sigma \left({W}_1 {x} + {b}_1\right)\right] + {b}_2)$$
+            $\text{input: }\dim (x) = M \times 1$\\
+            $\text{layer 1 ($H$ hidden units): }\dim(W_1) = H \times M, \dim (b_1) = H\times 1, \dim(a_1) = H\times 1, \dim (z_1) = H\times 1$\\
+            $\text{layer 2: } \dim(W_2) = 1\times H, \dim(b_2) = 1\times 1, \dim (a_2) = 1\times1, \dim(\hat y) = 1\times 1$
+        \item
+            \begin{enumerate}
+                \item $$L = -(y \log (\hat{y}) + (1 - y) \log (1 - \hat{y}))$$
+                $$\frac{\delta L}{\delta b_2} = \frac{\delta L}{\delta \hat y} \frac{\delta \hat y}{\delta a_2}\frac{\delta a_2}{\delta b_2}$$
+                $\frac{\delta L}{\delta \hat y} = -(y \frac{1}{\hat y}) + (1 - y) \frac{1}{1-\hat y}) = \frac{-y + y\hat y + \hat y - y \hat y}{\hat y(1 - \hat y)} = \frac{\hat y - y}{\hat y (1 - \hat y)}$\\
+                $$\hat{y} = \sigma(a_2)$$
+                $\frac{\delta \hat y}{\delta a_2} = \sigma(a_2)(1 - \sigma(a_2)) = \hat y(1- \hat y)$\\
+                $$a_2 = W_2z_1 + b_2$$\\
+                $\frac{\delta a_2}{\delta b_2} = 1$\\
+                $$\frac{\delta L}{\delta b_2} = \frac{\hat y - y}{\hat y (1 - \hat y)}\hat y(1- \hat y) = \hat y - y$$
+                \item $$\frac{\delta L}{\delta W_2^h} = \frac{\delta L}{\delta \hat y} \frac{\delta \hat y}{\delta a_2}\frac{\delta a_2}{\delta W_2^h}$$
+                $\frac{\delta a_2}{\delta W_2^h} = z_1^h, \text{since $\dim (z_1) = H\times 1, \dim(W_2) = 1\times H$, and so $W_2^h$ only depends on $z_1^h$}$
+                $$\frac{\delta L}{\delta W_2^h} = (\hat y - y)z_1^h$$
+                \item $$\frac{\delta L}{\delta b_1^h} = \frac{\delta L}{\delta \hat y} \frac{\delta \hat y}{\delta a_2}\frac{\delta a_2}{\delta z_1^h}\frac{\delta z_1^h}{\delta a_1^h}\frac{\delta a_1^h}{\delta b_1^h}$$\\
+                $$a_2 = W_2z_1 + b_2$$
+                $\frac{\delta a_2}{\delta z_1^h} = W_2^h$\\
+                $$z_1^h = \sigma(a_1^h), \text{since sigmoid is element-wise}$$
+                $\frac{\delta z_1^h}{\delta a_1^h} = \sigma(a_1^h)(1 - \sigma(a_1^h)) = z_1^h(1 - z_1^h)$\\
+                $$a_1^h = W_1^hx + b_1^h,$$ $$\text{since }\dim(a_1) = H\times 1, \dim (b_1) = H\times 1, \dim (W_1x) = H \times M * M\times 1,$$ $$\text{so } a_1^h \text{ only depends on specified $h$th rows and columns}$$
+                $\frac{\delta a_1^h}{\delta b_1^h} = 1$
+                $$\frac{\delta L}{\delta b_1^h}  = (\hat y - y)W_2^hz_1^h(1-z_1^h)$$
+                \item $$\frac{\delta L}{\delta W_1^{h, j}} = \frac{\delta L}{\delta \hat y} \frac{\delta \hat y}{\delta a_2}\frac{\delta a_2}{\delta z_1^h}\frac{\delta z_1^h}{\delta a_1^h}\frac{\delta a_1^h}{\delta W_1^{h, j}}$$
+                $$a_1^h = W_1^hx + b_1^h$$
+                $\frac{\delta a_1^h}{\delta W_1^{h, j}} = x_j$, since $\dim (W_1x) = H \times M * M\times 1$, and so $W_1^{h, j}$ only depends on the $j$th element of $x$
+                $$\frac{\delta L}{\delta W_1^{h, j}} = (\hat y - y)W_2^hz_1^h(1-z_1^h)x_j$$
+            \end{enumerate}
+        \item 
+            \begin{enumerate}
+                \item 
+                    $$x_1 = \frac{\pi}{6} \text{ and } x_2 = 1$$
+                    \begin{align*}
+                        v_1         & = x_1 = \frac{\pi}{6}          \\
+                        v_2         & = \sin (v_1) = 0.5    \\
+                        v_3         & = \ln (v_2) = \ln 0.5      \\
+                        v_4         & = x_2 = 1            \\
+                        v_5         & = \exp \{ v_4 \} = e \\
+                        v_6         & = v_1v_5 =  \frac{\pi}{6}e        \\
+                        v_7         & = v_3 + v_6     = \ln 0.5 + \frac{\pi}{6}e\\
+                        f(x_1, x_2) & = v_7 = \ln 0.5 + \frac{\pi}{6}e 
+                    \end{align*}
+                \item 
+                    $$x_1 = \frac{\pi}{6} \text{ and } x_2 = 1$$
+                    \begin{align*}
+                        v_1         & = x_1 = \frac{\pi}{6}        \\
+                        \frac{\delta v_1}{\delta x_1} & = 1\\
+                        v_2         & = \sin (v_1)  = 0.5 \\
+                        \frac{\delta v_2}{\delta x_1} & = \frac{\delta v_2}{\delta v_1}\frac{\delta v_1}{x_1} = \cos (v_1) = \cos(\frac{\pi}{6}) = \frac{\sqrt 3}{2}\\
+                        v_3         & = \ln (v_2) = \ln 0.5      \\
+                        \frac{\delta v_3}{\delta x_1} & = \frac{\delta v_3}{\delta v_2}\frac{\delta v_2}{\delta v_1}\frac{\delta v_1}{x_1} = \frac{1}{v_2}\frac{\sqrt 3}{2} = \sqrt 3\\
+                        v_4         & = x_2 = 1            \\
+                        \frac{\delta v_4}{\delta x_1} & = 0\\
+                        v_5         & = \exp \{ v_4 \} = e \\
+                        \frac{\delta v_5}{\delta x_1} & = \frac{\delta v_5}{\delta v_4}\frac{\delta v_4}{\delta x_1} = 0\\
+                        v_6         & = v_1v_5 =  \frac{\pi}{6}e        \\
+                        \frac{\delta v_6}{\delta x_1} & = v_1\frac{\delta v_5}{\delta x_1}+v_5\frac{\delta v_1}{\delta x_1} = 0 + e = e\\
+                        v_7         & = v_3 + v_6     = \ln 0.5 + \frac{\pi}{6}e \\
+                        \frac{\delta v_7}{\delta x_1} & = \frac{\delta v_3}{\delta x_1} + \frac{\delta v_6}{\delta x_1} = \sqrt 3 + e\\
+                        f(x_1, x_2) & = v_7 = \ln 0.5 + \frac{\pi}{6}e\\
+                        \frac{\delta f(x_1, x_2)}{\delta x_1}& =\frac{\delta v_7}{\delta x_1} = \sqrt 3 + e\\
+                    \end{align*}
+            \end{enumerate}
+	\end{enumerate}
 \end{solution}
 
 
@@ -427,7 +514,36 @@ Fashion-MNIST images are $28 \times 28$ with 1 channel. After the stem's max-poo
 \end{problem}
 
 \begin{solution}
-	Your solution here.
+	\begin{enumerate} [label=(\alph*)]
+	    \item 
+            \begin{enumerate} [label=(\roman*)]
+	           \item $N_{\text{Stem}} = N_{\text{Conv2d(1, $C$, 3, padding = 1, bias = False)}} + N_{\text{BatchNorm2D($C$)}} = 3^2 * 1 * C + 2C = 11C$\\
+               $N_{\text{ResBlock}} = N_{\text{Conv2d($C$, $C$, 3, padding = 1, bias = False)}} + N_{\text{BatchNorm2D($C$)}} + N_{\text{Conv2d($C$, $C$, 3, padding = 1, bias = False)}} + N_{\text{BatchNorm2D($C$)}} = 9C^2 + 2C + 9C^2 + 2C = 18C^2 + 4C$\\
+               $N_{\text{Head}} = C * 10 + 10 = 10C + 10$\\
+               $N = N_{\text{Stem}} + K*N_{\text{ResBlock}} + N_{\text{Head}} = 11C + K(18C^2 + 4C) + 10C + 10 =K(18C^2 + 4C) + 21C +   10 = 73984K + 1354$
+               \item Data sweep summary:\\
+                    D= 1000 (used= 1000)  loss=0.65478  epochs=24\\
+                    D= 2000 (used= 2000)  loss=0.69909  epochs=31\\
+                    D= 5000 (used= 5000)  loss=0.48820  epochs=27\\
+                    D=10000 (used=10000)  loss=0.34587  epochs=40\\
+                    D=20000 (used=20000)  loss=0.28318  epochs=19\\
+                    D=30000 (used=30000)  loss=0.29706  epochs=27\\
+                    D=50000 (used=50000)  loss=0.23989  epochs=20\\
+               \item $$\includegraphics[width = 0.5 \linewidth]{hw3/img_output/3.aiii.png}$$\\
+               $\hat \alpha = 1.119719, \hat \beta  = 0.729160$\\
+               $$L(N, D) \approx \frac{a}{N^{\alpha}} + \frac{b}{D^{\beta}} + L_{\infty}$$
+               Since we vary $N$ and $D$ is fixed, $\frac{b}{D^{\beta}}$ is constant, and so
+               $$L(N, D) \approx \frac{a}{N^{\alpha}} + L_{\infty}$$
+               $$\frac{a}{N^{\alpha}} \approx L(N, D) - L_{\infty}$$
+               Now, taking log:
+               $$\log (L(N, D) - L_{\infty}) \approx \log(\frac{a}{N^{\alpha}}) \approx \log (a) - \alpha\log (N),$$
+               which is a straight line in the log-log space with slope $-\alpha$.\\
+               If we skipped the subtraction,
+               $$\log (L) \approx \log (\frac{a}{N^{\alpha}} + L_{\infty})$$
+               which is not linear in the log-log space since as $N \rightarrow \infty, \log (L) \approx \log(L_{\infty})$, and so the line flattens with increasing $N$.
+               
+	        \end{enumerate}
+	\end{enumerate}
 \end{solution}
 
 
@@ -438,7 +554,7 @@ Fashion-MNIST images are $28 \times 28$ with 1 channel. After the stem's max-poo
 % Name and Calibration
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\textbf{Name}:
+\textbf{Name}: Ondrej Vesely
 
 \textbf{Collaborators and Resources}:
 
