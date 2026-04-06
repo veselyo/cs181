@@ -1,0 +1,235 @@
+\documentclass[submit]{../harvardml}
+\usepackage{../common}
+
+\assignment{Homework \#5}
+\duedate{April 19, 2026 at 11:59pm}
+
+\usepackage[OT1]{fontenc}
+\usepackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{framed}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\graphicspath{{img_output/}}
+
+\newenvironment{solution}{%
+    \vspace{2mm}\color{blue}\noindent\textbf{Solution}:\ }
+{}
+
+\begin{document}
+
+\begin{center}
+{\Large Clustering, PCA, SSL}\\
+\end{center}
+
+\subsection*{Overview}
+This homework contains four problems:
+\begin{enumerate}[leftmargin=*]
+    \item SimCLR and contrastive learning.
+    \item GANs and the Jensen--Shannon divergence interpretation.
+    \item K-means and hierarchical agglomerative clustering on handwritten digits.
+    \item PCA on MNIST.
+\end{enumerate}
+The coding portions are consolidated in \texttt{hw5\_release.ipynb}. The clustering and PCA plots used below are stored in \texttt{img\_output/}.
+
+\subsection*{Resources and Submission Instructions}
+Please type your answers after the corresponding problems using this \LaTeX\ template, and start each main problem on a new page.
+
+Please submit the writeup PDF to the Gradescope assignment \texttt{HW5}. Remember to assign pages for each question. \textbf{You must include any plots in your writeup PDF.} Please submit your \LaTeX\ file and code files to the Gradescope assignment \texttt{HW5 - Supplemental}. Your files should be named in the same way as we provide them in the repository, for example \texttt{hw5\_release.tex} and \texttt{hw5\_release.ipynb}.
+
+\begin{problem}[Contrastive Learning]
+In this problem we study SimCLR, a self-supervised learning framework that learns visual representations without labels by training a network to identify which data augmentations came from the same image.
+
+This problem mixes short written questions with an implementation scaffold. In the notebook, the SimCLR section is organized in the same order as the written prompt: encoder backbone, projection head, NT-Xent loss, verification, pre-training, and linear evaluation.
+
+\begin{enumerate}[leftmargin=*]
+\item \textbf{SimCLR and the NT-Xent loss.}
+
+The SimCLR pipeline works as follows. Given a minibatch of \(N\) images, each image \(x_k\) is augmented twice, producing a positive pair \((\tilde{x}_{2k-1}, \tilde{x}_{2k})\). This yields \(2N\) augmented views total. Each view is passed through an encoder \(f\) and a projection head \(g\) to produce normalized embeddings
+\[
+\mathbf{z}_i = \frac{g(f(\tilde{x}_i))}{\|g(f(\tilde{x}_i))\|}.
+\]
+For a positive pair \((i,j)\), the NT-Xent loss is
+\[
+\ell(i,j) = -\log \frac{\exp(\mathbf{z}_i^\top \mathbf{z}_j / \tau)}{\sum_{k=1,\,k\neq i}^{2N} \exp(\mathbf{z}_i^\top \mathbf{z}_k / \tau)},
+\]
+where \(\tau > 0\) is a temperature parameter.
+
+\begin{enumerate}[label=(\alph*)]
+    \item Show that \(\ell(i,j)\) is equivalent to the cross-entropy loss of a \((2N-1)\)-way classification problem in which the positive partner \(j\) is the correct class and the remaining \(2N-2\) embeddings are negatives.
+    \item Consider the softmax weight assigned to a negative sample \(k \neq j\):
+    \[
+    w_k = \frac{\exp(\mathbf{z}_i^\top \mathbf{z}_k / \tau)}{\sum_{m=1,\,m\neq i}^{2N} \exp(\mathbf{z}_i^\top \mathbf{z}_m / \tau)}.
+    \]
+    Explain what happens as \(\tau \to 0^+\), what happens as \(\tau \to \infty\), and why an intermediate temperature is preferred in practice.
+\end{enumerate}
+
+\item \textbf{Representation collapse and augmentations.}
+\begin{enumerate}[label=(\alph*)]
+    \item Compute \(\ell(i,j)\) under the collapse solution \(f(x)=\mathbf c\), where \(\mathbf c\) is a constant unit vector and therefore every pairwise similarity is \(1\).
+    \item Explain intuitively why the encoder representation \(\mathbf h=f(x)\) is often more useful downstream than the projection-head output \(\mathbf z=g(f(x))\).
+    \item Discuss the effect of overly aggressive augmentations and overly weak augmentations on the learned representation.
+\end{enumerate}
+
+\item \textbf{Implementing SimCLR components (code).}
+In the notebook, implement:
+\begin{enumerate}[label=(\alph*)]
+    \item a two-layer projection head \(\mathrm{Linear} \to \mathrm{ReLU} \to \mathrm{Linear}\), and
+    \item the NT-Xent loss for two batches of projected views.
+\end{enumerate}
+The intended implementation flow is:
+\begin{enumerate}[label=(\roman*)]
+    \item \(\ell_2\)-normalize the representations,
+    \item concatenate them into a \(2N \times d_z\) matrix,
+    \item compute the \(2N \times 2N\) cosine-similarity matrix scaled by \(1/\tau\),
+    \item mask self-similarities,
+    \item identify the positive-pair index for each view, and
+    \item compute cross-entropy loss using the positive index as the target.
+\end{enumerate}
+The corresponding notebook cells are grouped under the SimCLR headings
+\texttt{Projection Head}, \texttt{NT-Xent Loss}, and
+\texttt{Run Test Cases}.
+
+\item \textbf{SimCLR training and linear evaluation (code).}
+Use the provided training scaffold to:
+\begin{enumerate}[label=(\alph*)]
+    \item pre-train the encoder and projection head on FashionMNIST without labels,
+    \item freeze the encoder and run linear evaluation on top of the learned features, and
+    \item compare the resulting linear-evaluation accuracy against a supervised baseline with the same encoder architecture.
+\end{enumerate}
+In the notebook, these correspond to the sections
+\texttt{Data Loading and Augmentations},
+\texttt{SimCLR Pre-training},
+\texttt{Linear Evaluation}, and
+\texttt{Supervised Baseline}.
+\end{enumerate}
+\end{problem}
+
+\begin{solution}
+	Your solution here.
+\end{solution}
+
+\newpage
+
+\begin{problem}[GANs]
+Consider the original minimax GAN objective
+\[
+\min_G \max_D V(D,G) = \mathbb E_{x\sim p_{\mathrm{data}}}[\log D(x)] + \mathbb E_{z\sim p_z}[\log(1-D(G(z)))] .
+\]
+Let \(p_g\) denote the distribution induced by \(x = G(z)\).
+
+This problem has both a written component and a coding component.
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Written work:} derive the optimal discriminator, rewrite the GAN objective in terms of the Jensen--Shannon divergence, and explain the resulting training objectives in words and equations.
+    \item \textbf{Code work:} implement the practical GAN training loop in the notebook by defining the generator and discriminator, implementing the discriminator and generator losses, and alternating the two updates during training.
+\end{itemize}
+
+The GAN notebook section is deliberately split into small cells so that the mathematical objectives and the alternating training logic are easy to match to the code. The intended order is data setup, model definitions, loss definitions, one-epoch training logic, and then the multi-epoch training loop.
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Interpreting GANs as Jensen--Shannon divergence (written).}
+    Assume \(G\) is fixed.
+    \begin{enumerate}[label=(\alph*)]
+        \item Derive the optimal discriminator \(D^*(x)\) in terms of \(p_{\mathrm{data}}(x)\) and \(p_g(x)\).
+        \item Substitute \(D^*(x)\) back into the GAN objective and show that the result can be written as a constant plus a Jensen--Shannon divergence term.
+        \item Explain, in words, what this means for what the generator is trying to do.
+    \end{enumerate}
+    \item \textbf{From derivation to training algorithm (written).}
+    \begin{enumerate}[label=(\alph*)]
+        \item Write the discriminator objective.
+        \item Write the generator objective.
+        \item Describe the alternating training loop used in practice.
+    \end{enumerate}
+    \item \textbf{GAN implementation (code).}
+    In the notebook, complete the practical GAN scaffold by:
+    \begin{enumerate}[label=(\alph*)]
+        \item defining the generator and discriminator networks,
+        \item implementing the discriminator loss on real and fake batches,
+        \item implementing the generator loss,
+        \item writing the alternating update logic for one epoch of training, and
+        \item training for multiple epochs and visualizing generated samples.
+    \end{enumerate}
+    In \texttt{hw5\_release.ipynb}, these correspond to the GAN section cells for model setup, loss definitions, \texttt{train\_one\_epoch}, and the final training loop.
+\end{enumerate}
+\end{problem}
+
+\begin{solution}
+	Your solution here.
+\end{solution}
+
+\newpage
+
+\begin{problem}[K-Means and HAC]
+For this problem, K-means and hierarchical agglomerative clustering are implemented from scratch and applied to handwritten-digit data.
+
+Your job is to implement K-means and HAC on MNIST and test whether these relatively simple algorithms can cluster similar-looking images together. The clustering section of the notebook is organized by subproblem number so that each saved figure can be traced back to the corresponding written prompt.
+
+\begin{enumerate}[leftmargin=*]
+    \item The code loads the images into two arrays: \texttt{large\_dataset}, a \(5000 \times 784\) array used for K-means, and \texttt{small\_dataset}, a \(300 \times 784\) array used for HAC. A companion array \texttt{small\_dataset\_labels} is used only for the confusion-matrix comparison. In your code, use the \(\ell_2\) norm (Euclidean distance) as the distance metric.
+    \item Starting from a random initialization with \(K=10\), plot the K-means objective function as a function of iteration and verify that it never increases.
+    \item For \(K=10\) and three random restarts, display the mean image for each cluster. Present the \(30\) total images in a single plot.
+    \item Repeat the previous part after standardizing each pixel to have mean \(0\) and variance \(1\), dividing by \(1\) for any zero-variance pixels. Compare the resulting centroids to the unstandardized case.
+    \item Implement HAC for max, min, and centroid linkage. Fit each method to the small dataset and show the mean image for each cluster when there are exactly \(10\) clusters. Comment on crispness and explain why HAC only needs one run.
+    \item For each HAC linkage and for one K-means run, plot the number of images in each cluster at the stage where there are \(10\) clusters. Explain what these plots say about max-linkage versus min-linkage behavior.
+    \item Using the K-means and HAC assignments on the small dataset, plot the pairwise confusion matrices between the clustering methods. Identify which HAC variant is closest to K-means and explain why.
+    \item Discuss whether clustering is a good strategy for digit identification, whether clusters should be expected to match true labels, and what kinds of bad or adversarial data are especially problematic for clustering methods.
+\end{enumerate}
+\end{problem}
+
+\begin{solution}
+	Your solution here.
+\end{solution}
+
+\newpage
+
+\begin{problem}[PCA]
+
+  For this problem you will implement PCA from scratch on the first 6000 images of the MNIST dataset. Your job is to apply PCA on MNIST and discuss what kind of structure is found. Implement your solution in \texttt{hw5\_release.ipynb} and attach the final plots below. \\
+
+  \noindent {\bfseries Do not use third-party PCA implementations (for example, {\normalfont \texttt{scikit-learn}}).}
+  \begin{enumerate}
+
+    \item Compute the PCA. Plot the eigenvalues corresponding to the most
+    significant 500 components in order from most significant to
+    least. Make another plot that describes the cumulative proportion of
+    variance explained by the first $k$ most significant components for
+    values of $k$ from 1 through 500.  How much variance is explained by
+    the first 500 components?  Describe how the cumulative proportion of
+    variance explained changes with $k$.  Include this plot below.
+
+    \item Plot the mean image of the dataset and plot an image
+    corresponding to each of the first 10 principle components.  How do
+    the principle component images compare to the cluster centers from
+    K-means? Discuss any similarities and differences.  Include these
+    two plots below.
+    
+    \textit{Reminder: Center the data before performing PCA.}
+
+    \item Compute the reconstruction error on the dataset using the first 10 principal components. Then compute the reconstruction error when the reconstruction for each point is just the mean
+    image of the dataset. How do these errors compare to
+    the final objective loss achieved by using K-means on the dataset?
+    Discuss any similarities and differences.
+
+    For consistency in grading, define the error function as the squared L2
+    norm of the difference between the true data and the reconstruction, averaged over all data points.
+  
+    \item Suppose you took the original matrix of principle components
+    that you found $V$ and multiplied it on the right side by some rotation matrix $R$ (i.e., you considered the matrix $VR$).
+    Would that change the quality of the reconstruction error in the
+    last problem?  The interpretation of the components?  Why or why
+    not?
+
+  \end{enumerate}
+\end{problem}
+
+\begin{solution}
+	Your solution here.
+\end{solution}
+
+\end{document}
