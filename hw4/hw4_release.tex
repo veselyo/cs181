@@ -227,7 +227,47 @@ briefly describe what it suggests the model is attending to.
 
 
 \begin{solution}
-	Your solution here.
+	\begin{enumerate}
+        \item
+            \begin{enumerate}
+                \item 
+                    $$Q = XW_Q = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}\begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix} = \begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix}$$
+                    $$K = XW_K = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}\begin{pmatrix} 1 & 0 \\1 & 1 \end{pmatrix} = \begin{pmatrix} 1 & 0 \\ 1 & 1 \end{pmatrix}$$
+                    $$V = XW_V = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}\begin{pmatrix} 2 & 0 \\0 & 1 \end{pmatrix} = \begin{pmatrix} 2 & 0 \\ 0 & 1 \end{pmatrix}$$
+                    $$S = QK^T = \begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix}\begin{pmatrix} 1 & 0 \\ 1 & 1 \end{pmatrix}^T = \begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix}\begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix} = \begin{pmatrix} 1 & 2 \\ 0 & 1 \end{pmatrix}$$
+                \item 
+                    $$S/ \sqrt{d_k} = S/ \sqrt{2} = \begin{pmatrix} 1 & 2 \\ 0 & 1 \end{pmatrix} / \sqrt{2} = \begin{pmatrix} \sqrt{2} /2 & \sqrt{2} \\ 0 & \sqrt{2}/2 \end{pmatrix}$$
+                    $$A = \begin{pmatrix} \frac{e^{\sqrt{2}/2}}{e^{\sqrt{2}/2} + e^{\sqrt{2}}} & \frac{e^{\sqrt{2}}}{e^{\sqrt{2}/2} + e^{\sqrt{2}}} \\ \frac{1}{1 + e^{\sqrt{2}/2}} & \frac{e^{\sqrt{2}/2}}{1 + e^{\sqrt{2}/2}} \end{pmatrix}$$
+            \end{enumerate}
+        \item
+            \begin{enumerate}
+                \item 
+                    $$E[q^Tk] = \sum_{i=1}^{d_k}E[q_i]E[k_i] = \sum_{i=1}^{d_k}0 = 0$$
+                    $Var[q^Tk] = \sum_{i=1}^{d_k}Var[q_ik_i] = \sum_{i=1}^{d_k}E[q_i^2k_i^2] - (E[q_ik_i])^2 = \sum_{i=1}^{d_k}E[q_i^2]E[k_i^2] = \sum_{i=1}^{d_k}(Var[q_i] + (E[q_i])^2)(Var[k_i] + (E[k_i])^2) = \sum_{i=1}^{d_k} 1 = d_k$
+                \item
+                    The magnitude of $q^Tk$ increases which is illustrated by the sum $\sum_{i=1}^{d_k}q_ik_i$; more terms in the sum leads to higher magnitude.\\
+                    This means that each term in $S$ will be of larger magnitude. Since softmax is exponential, one token will get almost all the weight and others almost none, becoming more peaked, which will lead to vanishing gradients $a_i(1 - a_i)$ during training.
+                \item
+                    $$Var[q^Tk] = d_k$$
+                    $$Var[1/ \sqrt{d_k} * q^Tk] = 1/d_k * Var[q^Tk] = 1$$
+            \end{enumerate}
+        \item
+            \begin{enumerate}
+                \item
+                    $$Q' = P_{\sigma}XW_Q = P_{\sigma}(XW_Q) = P_{\sigma}Q, K' = P_{\sigma}K, V' = P_{\sigma}V$$
+                    $$S' = Q'(K')^T = P_{\sigma}Q(P_{\sigma}K)^T = P_{\sigma}QK^TP_{\sigma}^T = P_{\sigma}SP_{\sigma}^T$$
+                    $softmax(S'/\sqrt{d_k})  = softmax(P_{\sigma}SP_{\sigma}^T / \sqrt{d_k}) = P_{\sigma}softmax(S\sqrt{d_k})P_{\sigma}^T$, since softmax is applied row-wise
+                    $$Attention(Q', K', V') = P_{\sigma}softmax(S\sqrt{d_k})P_{\sigma}^T * P_{\sigma}V = P_{\sigma}softmax(S\sqrt{d_k})V = P_{\sigma} Attention(Q, K, V)$$
+                \item
+                    The meaning of language depends on the order in which words appear. If self-attention is permutation equivariant, this means that we would get the same self-attention (except shuffled) even if we shuffled the order of words. The model would thus pay no attention to word ordering during training, which is wrong for understanding language.
+                \item
+                    This is because $PE$ is will be unchanged upon permuting $X$: $X' = P_{\sigma}X + PE \neq P_{\sigma} (X + PE)$, and therefore self-attention is no longer permutation equivariant, and so it captures information about position of tokens.
+            \end{enumerate}
+        \stepcounter{enumi}
+        \item
+            \in
+            
+	\end{enumerate}
 \end{solution}
 
 
