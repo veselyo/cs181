@@ -529,19 +529,41 @@ Fashion-MNIST images are $28 \times 28$ with 1 channel. After the stem's max-poo
                     D=20000 (used=20000)  loss=0.28318  epochs=19\\
                     D=30000 (used=30000)  loss=0.29706  epochs=27\\
                     D=50000 (used=50000)  loss=0.23989  epochs=20\\
-               \item $$\includegraphics[width = 0.5 \linewidth]{hw3/img_output/3.aiii.png}$$\\
+               \item $$\includegraphics[width = \linewidth]{hw3/img_output/3.aiii.png}$$
                $\hat \alpha = 1.119719, \hat \beta  = 0.729160$\\
                $$L(N, D) \approx \frac{a}{N^{\alpha}} + \frac{b}{D^{\beta}} + L_{\infty}$$
-               Since we vary $N$ and $D$ is fixed, $\frac{b}{D^{\beta}}$ is constant, and so
-               $$L(N, D) \approx \frac{a}{N^{\alpha}} + L_{\infty}$$
-               $$\frac{a}{N^{\alpha}} \approx L(N, D) - L_{\infty}$$
+               We will first look at the first plot, and same reasoning would generalize for the second. Since we vary $N$ and $D$ is fixed, $\frac{b}{D^{\beta}}$ is constant, and so
+               $$L(N) \approx \frac{a}{N^{\alpha}} + L_{\infty}$$
+               $$\frac{a}{N^{\alpha}} \approx L(N) - L_{\infty}$$
                Now, taking log:
-               $$\log (L(N, D) - L_{\infty}) \approx \log(\frac{a}{N^{\alpha}}) \approx \log (a) - \alpha\log (N),$$
+               $$\log (L(N) - L_{\infty}) \approx \log(\frac{a}{N^{\alpha}}) \approx \log (a) - \alpha\log (N),$$
                which is a straight line in the log-log space with slope $-\alpha$.\\
                If we skipped the subtraction,
-               $$\log (L) \approx \log (\frac{a}{N^{\alpha}} + L_{\infty})$$
+               $$\log (L(N)) \approx \log (\frac{a}{N^{\alpha}} + L_{\infty})$$
                which is not linear in the log-log space since as $N \rightarrow \infty, \log (L) \approx \log(L_{\infty})$, and so the line flattens with increasing $N$.
-               
+	        \end{enumerate}
+        \item 
+            \begin{enumerate} [label=(\roman*)]
+	           \item
+               $$ D = C_{\text{compute}}/(6N)$$
+               $$L(N) \approx \frac{a}{N^\alpha} + b(\frac{6N}{C_{\text{compute}}})^\beta + L_{\infty} \propto a N^{-\alpha} + b6^\beta N^\beta C_{\text{compute}}^{-\beta}$$
+               $$\frac{\delta L}{\delta N} = 0$$
+               $$-a\alpha N^{-\alpha - 1} + \beta b6^\beta N^{\beta - 1} C_{\text{compute}}^{-\beta} = 0$$
+               $$  \beta b6^\beta N^{\beta - 1} C_{\text{compute}}^{-\beta} = a\alpha N^{-\alpha - 1}$$
+               $$N^{\alpha + \beta} = \frac{a \alpha}{\beta b6^\beta }C_{\text{compute}}^{\beta}$$
+               $$N^*(C_{\text{compute}}) \propto C_{\text{compute}}^{\beta/(\alpha + \beta)}$$
+               $$ D^*(C_{\text{compute}}) = C_{\text{compute}}/(6N) \propto C_{\text{compute}} C_{\text{compute}}^{-\beta/(\alpha + \beta)} = C_{\text{compute}}^{1-\beta/(\alpha + \beta)} = C_{\text{compute}}^{\alpha/(\alpha + \beta)}$$
+               \item $\hat \alpha = 1.119719, \hat \beta  = 0.729160$ \\
+               $N^*(C_{\text{compute}}) \propto C_{\text{compute}}^{\beta/(\alpha + \beta)} = C_{\text{compute}}^{0.39}$\\
+               $D^*(C_{\text{compute}}) \propto C_{\text{compute}}^{\alpha/(\alpha + \beta)} = C_{\text{compute}}^{0.6}$\\
+               Doubling compute: $N$ increases by $2^{0.39} = 1.31$, $D$ by $2^{0.6} = 1.52$
+               \item If $\alpha \gg \beta$, then $\beta/(\alpha + \beta) \rightarrow 1$, so $N$ grows fast with compute, and $\alpha/(\alpha + \beta) \rightarrow 0$, so $D$ barely grows. Thus, we should spend almost all extra compute on bigger models and keep the dataset small. If $b \gg a$, we should spend almost all extra compute on more data and keep the model small.
+	        \end{enumerate}
+        \item 
+            \begin{enumerate} [label=(\roman*)]
+	           \item
+               Predicted test loss: $0.27$, true test loss: $0.22$. The prediction was too high by a roughly $19\%$ relative error, which is not so bad considering no training. Using $D = 50000$ as the irreducible loss overestimates the true irreducible loss since the model can still improve. This discrepancy makes the fitted slope shallower than in reality, which is why we predict a higher loss than the true value. The further outside the training set, the larger that discrepancy is going to be.
+               \item $K=12$ cannot match $K=18$'s performance of $0.2195$. The estimated irreducible loss for $K=12$ is $0.24$, so even with infinite data, the model can't do better than that due to the power scaling law.
 	        \end{enumerate}
 	\end{enumerate}
 \end{solution}
@@ -556,6 +578,6 @@ Fashion-MNIST images are $28 \times 28$ with 1 channel. After the stem's max-poo
 
 \textbf{Name}: Ondrej Vesely
 
-\textbf{Collaborators and Resources}:
+\textbf{Collaborators and Resources}: Ethan Kiang
 
 \end{document}
