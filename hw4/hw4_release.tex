@@ -387,8 +387,55 @@ In a VAE, the encoder outputs the parameters of the approximate posterior\\ $q_\
                     $$\includegraphics[width = 0.5 \linewidth]{hw4/img_output/2.1a1.png}$$
                     $$\includegraphics[width = \linewidth]{hw4/img_output/2.1a2.png}$$
                 \item
-                    $$\includegraphics[0.5 \linewidth]{hw4/img_output/2.1b.png}$$
+                    $$\includegraphics[width =\linewidth]{hw4/img_output/2.1b.png}$$
+                    The autoencoder is trained to encode useful features into the latent space and then reconstruct the image from them. If we sample random vectors in the latent space following a normal, they never went through the encoder, so the decoder has no reason to produce coherent outputs from them, as it was only trained on vectors the encoder produced.
             \end{enumerate}
+        \item
+            \begin{enumerate}
+                \item 
+                    Since $z$ is high dimensional, it is almost impossible to randomly sample $z$ following a normal that actually explain $x$. Almost all samples will just be random noise which will contribute nothing to the integral, and so we would need an unfeasible amount of samples.
+                \item
+                    \begin{enumerate}
+                        \item 
+                            $$\KL\!\big(q_\phi(\bz \mid \bx) \,\|\, p(\bz \mid \bx)\big) = \E_{q_\phi(\bz \mid \bx)}\!\Big[\log q_\phi(\bz \mid \bx) - \log p(\bz \mid \bx)\Big]=$$
+                            $$= \E_{q_\phi(\bz \mid \bx)}\!\Big[\log q_\phi(\bz \mid \bx) - \log\frac{ p(x,z)}{p(x)}] = $$
+                            $$= \E_{q_\phi(\bz \mid \bx)}\!\Big[\log q_\phi(\bz \mid \bx) - \log p(x,z) + \log p(x)]$$
+                            $$ = \log p(x) + \E_{q_\phi(\bz \mid \bx)}\!\Big[\log q_\phi(\bz \mid \bx) - \log p(x,z)\Big]$$
+                            $$\log p(\bx) = \KL\!\big(q_\phi(\bz \mid \bx) \,\|\, p(\bz \mid \bx)\big) - \E_{q_\phi(\bz \mid \bx)}\!\Big[\log q_\phi(\bz \mid \bx) - \log p(x,z)\Big] = $$
+                            $$= \KL\!\big(q_\phi(\bz \mid \bx) \,\|\, p(\bz \mid \bx)\big) + \E_{q_\phi(\bz \mid \bx)}\!\Big[\log p(\bx, \bz) - \log q_\phi(\bz \mid \bx)\Big].$$
+                        \item
+                            Since $ELBO \leq \log p(x)$, it is a lower bound for the log-likelihood, and thus maximizing it is a good substitute for maximizing the true value.
+                        \item
+                            $$\mathrm{ELBO} = \E_{q_\phi(\bz \mid \bx)}\!\Big[\log p(\bx, \bz) - \log q_\phi(\bz \mid \bx)\Big] = $$
+                            $$ = \E_{q_\phi(\bz \mid \bx)}\!\Big[\log p(\bx | \bz) + \log p(z) - \log q_\phi(\bz \mid \bx)\Big] = $$
+                            $$\E_{q_\phi(\bz \mid \bx)}\!\Big[\log p(\bx | \bz)\Big] - \E_{q_\phi(\bz \mid \bx)} \Big[\log q_\phi(\bz \mid \bx) - \log p(z)\Big]=$$
+                            $$= \E_{q_\phi(\bz \mid \bx)}\!\big[\log p(\bx \mid \bz)\big] - \KL\!\big(q_\phi(\bz \mid \bx) \,\|\, p(\bz)\big)$$
+                    \end{enumerate}
+                \item
+                    \begin{enumerate}
+                        \item
+                            Minimizing the negative expected log-likelihood is the same as maximizing the expected log-likelihood, which increases the accuracy of the decoder reconstructions of $x$ from $z$. This is the same goal as minimizing the reconstruction loss from section 1.
+                        \item
+                            The original autoencoder only had a goal of encoding useful information into z and accurately reconstructing from it, and so random samples from z following a normal distribution were unlikely to contain useful information for coherent decodings. Now with the penalization, the autoencoder is incentivized to encode useful information into z whilst following a normal distribution, so if we randomly sample from it, the decodings are likely to lead to coherent outputs.
+                        \item
+                            The first term wants the autoencoder to reconstruct as well as possible, and so it pushes the encoder to encode useful information into $z$ so that the decoder can accurately reconstruct, while the second term pushes $z$ to follow random noise. This will likely lead to not as accurate reconstructions (blurry, some features slightly off), but also the decoder will be able to produce coherent outputs if we sample from $z$ following a normal distribution.
+                    \end{enumerate}
+            \end{enumerate}
+                \item
+                    \begin{enumerate}
+                        \item 
+                            Sampling is a stochastic action, and we can't find a gradient in randomness, so we can't backpropagate through it.\\
+                            If $\epsilon \sim N(0, I)$, then $z = \mu_\phi(x) + \sigma_\phi(x) \odot \epsilon \sim N(\mu_\phi(x), diag(\sigma_\phi^2(x))$ since we are just scaling a gaussian distribution. We can now backpropagate through $z$ since everything that is parametrized is deterministic and the random noise has no parameters.
+                        \item
+                            $$\KL\!\big(q\,\|\, p\big) = \E_q\!\Big[\log q - \log p\Big]=$$
+                            $$= \E_{q}\!\Big[\log [\prod_{j=1}^d q(z_j)] - \log [\prod_{j=1}^d p(z_j)] = \Big]$$
+                            $$=\sum_{j=1}^d \E_{q}\!\Big[ \log q(z_j) - \log p(z_j) \Big] =$$
+                            $$= \sum_{j=1}^d \E_{q}[-\log(\sigma_j) - \frac{1}{2}\log(2\pi) - \frac{(z_j - \mu_j)^2}{2\sigma_j^2} + \frac{1}{2}\log(2\pi) + \frac{z_j^2}{2}]$$
+                            $$= \sum_{j=1}^d[-\log(\sigma_j) - \frac{\sigma_j^2}{2\sigma_j^2} + \frac{\mu_j^2 + \sigma_j^2}{2}]$$
+                            $$= \sum_{j=1}^d[-\frac{1}{2}\log(\sigma_j^2) - \frac{1}{2} +  \frac{\mu_j^2 + \sigma_j^2}{2}]$$
+                            $$= \frac{1}{2}\sum_{j=1}^d(\mu_j^2 + \sigma_j^2-\ln(\sigma_j^2) - 1)$$
+                        \item
+                    \end{enumerate}
 	\end{enumerate}
 \end{solution}
 \newpage
