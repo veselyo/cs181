@@ -434,7 +434,11 @@ In a VAE, the encoder outputs the parameters of the approximate posterior\\ $q_\
                             $$= \sum_{j=1}^d[-\log(\sigma_j) - \frac{\sigma_j^2}{2\sigma_j^2} + \frac{\mu_j^2 + \sigma_j^2}{2}]$$
                             $$= \sum_{j=1}^d[-\frac{1}{2}\log(\sigma_j^2) - \frac{1}{2} +  \frac{\mu_j^2 + \sigma_j^2}{2}]$$
                             $$= \frac{1}{2}\sum_{j=1}^d(\mu_j^2 + \sigma_j^2-\ln(\sigma_j^2) - 1)$$
-                        \item
+                        \item $$\includegraphics[width = 0.5 \linewidth]{hw4/img_output/2.3c1.png} \includegraphics[width = 0.5 \linewidth]{hw4/img_output/2.3c2.png}$$
+                        $$\includegraphics[width = 0.5 \linewidth]{hw4/img_output/2.3c3.png}$$
+                        $$\includegraphics[width = \linewidth]{hw4/img_output/2.3c4.png}$$
+                        $$\includegraphics[width =  \linewidth]{hw4/img_output/2.3c5.png}$$
+                        The decoded samples look like faces now. In 1(b), they looked like just random green and brown pixels, so this is a big change.
                     \end{enumerate}
 	\end{enumerate}
 \end{solution}
@@ -510,7 +514,56 @@ A key challenge in MoE training is \textbf{expert collapse}, where the gating ne
 \end{problem}
 
 \begin{solution}
-	Your solution here.
+	\begin{enumerate}
+	    \item 
+            \begin{enumerate}
+                \item 
+                    $$P(X \leq \frac{B}{2}) = P(\bar Z \leq \frac{1}{2}) = $$
+                    $$= P(\bar Z -p\leq \frac{1}{2} - p) =$$
+                    $$= P(\bar Z -E[\bar Z]\leq - ( p - \frac{1}{2}) =$$
+                    $$= P(\bar Z -E[\bar Z]\leq - t ) \leq$$
+                    $$\leq \exp\!\!\left(\frac{-2B^2 t^2}{\sum_{i=1}^{B}(b_i - a_i)^2}\right) =$$
+                    $$= \exp\!\!\left(\frac{-2B^2 (p - \frac{1}{2})^2}{B}\right), \text{since $b_i = 1, a_i = 0$}$$
+                    $$= \exp\!\!\left(-2B (p - \frac{1}{2})^2\right)$$
+                \item
+                    $p = 0.6$\\
+                    $B = 10: 0.819$\\
+                    $B = 100: 0.135$\\
+                    $B = 1000: 2.06 \times 10^{-9}$\\
+                    $10^{-6} = e^{(-2B(0.1)^2)} \rightarrow B \approx 690.78$, so it drops below $10^{-6}$ at $B = 691$.\\
+                    It looks like it's pretty good if the trees are not incredibly deep; I imagine this results in fewer parameters than a deep NN, so very achievable.\\
+                    It's probably not necessary since we are computing an upper bound, and the error in reality is likely much smaller.
+                \item
+                    It weakens it because correlated trees will make the same errors at the same time, and so they are likely to fail the majority vote. Independent trees make different errors, and thus the majority vote is more likely to pass.\\
+                    This reduces correlation because trees only see a random subset of the features, and so they will build different decision boundaries and make different errors. This improves convergence in turn as explained above.
+            \end{enumerate}
+        \item
+            \begin{enumerate}
+                \item 
+                    $$\text{Var}\!\left(\frac{1}{B}\sum_{b=1}^{B} T_b(\mathbf{x})\right) = \frac{1}{B^2}\text{Var}\!\left(\sum_{b=1}^{B} T_b(\mathbf{x})\right) = $$
+                    $$= \frac{1}{B^2}\!\left(\sum_{i=1}^{B}\sum_{j=1}^{B} Cov(T_i, T_j)\right) =$$
+                    $$= \begin{cases} 
+                        Var(T_i) = \sigma^2 & \text{if } i=j \\
+                        \rho \sigma^2 & \text{if } i \neq j
+                    \end{cases} =$$
+                    $$= \frac{1}{B^2}(B\sigma^2 + B(B-1)\rho \sigma^2) = $$
+                    $$= \frac{1}{B}(\sigma^2 + (B-1)\rho \sigma^2)= $$
+                    $$= \frac{\sigma^2 - \rho\sigma^2}{B} + \rho\sigma^2 = $$
+                    $$=\frac{(1 - \rho)\sigma^2}{B} + \rho\sigma^2$$
+                    \item
+                        \begin{enumerate}
+                            \item 
+                                It converges to $\rho\sigma^2$, and so we can't make the variance arbitrarily small by adding more trees, only by reducing correlation between trees.
+                            \item
+                                When $\rho = 0$, the trees are independent, and so the variance of the ensemble becomes $\frac{\sigma^2}{B}$, which approaches 0 as $B \rightarrow\infty$, which is the ideal scenario.
+                                When $\rho = 1$, the trees are perfectly correlated, and so the variance of the ensemble becomes ${\sigma^2}$, which is independent of $B$ since all the trees will predict the same outcome, and adding more won't improve variance.
+                        \end{enumerate}
+                    \item
+                        If $m = 1$, then the variance $\sigma^2$ will be high and so will be the total variance even tho $\rho$ is minimized. This is because each tree only sees 1 random feature and so the predictions will be quite useless and all over the place. $m$ thus controls the tradeoff between $\rho$ and $\sigma^2$.
+            \end{enumerate}
+        \item
+            Increasing model capacity for random forests will linearly increase computational cost, since all trees always run. Increasing model capacity for MoE increases computational cost linearly in terms of how many experts are activated for an input on average. This is exactly why Mixtral has ~47B parameters but only activates ~13B per token, since only a few experts are activated per input. This is impossible for random forests, since all ~47B parameters would be activated for any input, and that's why they can't scale up the way MoE can.
+	\end{enumerate}
 \end{solution}
 
 
@@ -519,7 +572,7 @@ A key challenge in MoE training is \textbf{expert collapse}, where the gating ne
 
 
 
-\textbf{Name}:
+\textbf{Name}: Ondrej Vesely
 
 \textbf{Collaborators and Resources}: 
 
