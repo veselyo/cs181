@@ -111,7 +111,38 @@ In the notebook, these correspond to the sections
 \end{problem}
 
 \begin{solution}
-	Your solution here.
+	\begin{enumerate}
+	    \item 
+            \begin{enumerate}
+                \item   
+                    For a correct class $c$: $L_{cross-entropy}(c) = - \log \frac{\exp(s_c)}{\sum_{k=1}^K\exp(s_k)}$.\\
+                    For $2N-1$ classes: $L_{cross-entropy}(c) = - \log \frac{\exp(s_c)}{\sum_{k=1}^{2N-1}\exp(s_k)}$.\\
+                    For a pair $p = (i, k)$, Let $s_p = z_i^Tz_k/\tau$ for each $k \neq i$.\\
+                    Then, for a positive pair $c = (i, j)$, and negative pairs $(i, k), k\neq i$:\\ $L_{cross-entropy}(i, j) = - \log \frac{\exp(z_i^Tz_j/\tau)}{\sum_{k=1}^{2N-1}\exp(z_i^Tz_k/\tau)} = - \log \frac{\exp(z_i^Tz_j/\tau)}{\sum_{k=1, k\neq i}^{2N}\exp(z_i^Tz_k/\tau)}$,\\
+                    since removing $k = i$ from $\{1, ...,2N\}$ leaves exactly $2N-1$ pairs, so the sum ranges are the same.
+                \item
+                    As $\tau \rightarrow 0^+$, the dot products are massively scaled. So, the "hardest" negative sample will dominate the denominator, leading to $w_k \rightarrow 1$ for that samples, and $w_k \rightarrow 0$ for all other negative samples.\\
+                    As $\tau \rightarrow \infty$, the dot products are evened out. So, all samples will get the same weight $w_k = \frac{1}{2N - 1}$.\\
+                    Intermediate $\tau$ is preferred such that the weights are proportionally distributed, "harder" samples get more weight, easier ones less, which gives a meaningful signal for training.
+            \end{enumerate}
+        \item
+            \begin{enumerate}
+                \item 
+                    $$l(i, j) = - \log \frac{\exp(z_i^Tz_j/\tau)}{\sum_{k=1, k\neq i}^{2N}\exp(z_i^Tz_k/\tau)}$$
+                    $$l(i, j) = - \log \frac{\exp(1/\tau)}{\sum_{k=1, k\neq i}^{2N}\exp(1/\tau)}$$
+                    $$l(i, j) = - \log \frac{\exp(1/\tau)}{(2N-1)\exp(1/\tau)}$$
+                    $$l(i, j) = - \log \frac{1}{(2N-1)}$$
+                    $$l(i, j) = \log (2N-1)$$
+                \item
+                    Because the $g$'s goal is to map two augmented views of the same image to the same point in $z$ space, so it throws away information about the features that are augmented (color, rotation, etc.).\\
+                    The encoder representation is more useful because it is not directly optimized by the contrastive loss, so it contains richer features that are thrown away by $g$.
+                \item
+                    Overly weak augmentations will make the task really easy for the model, as it can only use trivial low-level features like pixel similarity, which means that the learned representation won't contain meaningful structure.
+
+                    Overly strong will lead to the positive pairs of images being too distinct or noisy, containing barely any meaningful similarities, while the model has to map them to the same point. This means that the learned representation will be very noisy, again containing little meaningful structure. 
+            \end{enumerate}
+        \item \includegraphics[width = 0.5 \linewidth]{hw5}
+	\end{enumerate}
 \end{solution}
 
 \newpage
