@@ -141,7 +141,10 @@ In the notebook, these correspond to the sections
 
                     Overly strong will lead to the positive pairs of images being too distinct or noisy, containing barely any meaningful similarities, while the model has to map them to the same point. This means that the learned representation will be very noisy, again containing little meaningful structure. 
             \end{enumerate}
-        \item \includegraphics[width = 0.5 \linewidth]{hw5}
+        \stepcounter{enumi}
+        \item \ \\
+            \includegraphics[width = 0.5 \linewidth]{hw5/img_output/1.3b.png}
+            \includegraphics[width = 0.5 \linewidth]{hw5/img_output/1.3e.png}
 	\end{enumerate}
 \end{solution}
 
@@ -191,7 +194,44 @@ The GAN notebook section is deliberately split into small cells so that the math
 \end{problem}
 
 \begin{solution}
-	Your solution here.
+	\begin{enumerate}
+	    \item 
+            \begin{enumerate}
+                \item   
+                    $$\min_G \max_D V(D,G) = \mathbb E_{x\sim p_{\mathrm{data}}}[\log D(x)] + \mathbb E_{z\sim p_z}[\log(1-D(G(z)))]$$
+                    $$\max_D V(D,G) = \int_x [p_{\mathrm{data}}(x)\log D(x) + p_g(x)\log(1-D(x) ]dx$$
+                    $$\max_D V(D,G) \iff \forall x: \max_{D(x)} [p_{\mathrm{data}}(x)\log D(x) + p_g(x)\log(1-D(x)]$$
+                    $$\text{Let }f(D(x)) = p_{\mathrm{data}}(x)\log D(x) + p_g(x)\log(1-D(x)$$
+                    $$\frac{d}{dD(x)}f(D(x)) = \frac{p_{data}(x)}{D(x)} - \frac{p_g(x)}{1 - D(x)}$$
+                    $$\frac{p_{data}(x)}{D(x)} - \frac{p_g(x)}{1 - D(x)} = 0$$
+                    $$p_{data}(x)(1 - D(x)) = p_g(x)D(x)$$
+                    $$p_{data}(x) = D(x)(p_g(x) + p_{data}(x))$$
+                    $$ D^*(x) = \frac{p_{data}(x)}{p_g(x) + p_{data}(x)}$$
+                \item
+                    $$\min_G \max_D V(D,G) = \mathbb E_{x\sim p_{\mathrm{data}}}[\log D(x)] + \mathbb E_{z\sim p_z}[\log(1-D(G(z)))]$$
+                    $$V(D^*,G) = \int_x [p_{\mathrm{data}}(x)\log (\frac{p_{data}(x)}{p_g(x) + p_{data}(x)})) + p_g(x)\log(1-(\frac{p_{data}(x)}{p_g(x) + p_{data}(x)}) ]dx$$
+                    $$\text{Let }m = \frac{1}{2}(p_{data}(x) + p_g(x))$$
+                    $$V(D^*,G) = \int_x [p_{\mathrm{data}}(x)[\log (\frac{p_{data}(x)}{m(x)})-\log2] + p_g(x)[\log(\frac{p_{g}(x)}{m(x)}) - \log2]]dx$$
+                    $$V(D^*,G) = \int_x [p_{\mathrm{data}}(x)\log (\frac{p_{data}(x)}{m(x)}) + p_g(x)\log(\frac{p_{g}(x)}{m(x)}) - 2\log 2]dx$$
+                    $$V(D^*,G) = KL(p_{data}||m)+KL(p_g||m)- \log 4$$
+                    $$V(D^*,G) = 2(\frac{1}{2}KL(p_{data}||m)+\frac{1}{2}KL(p_g||m))- \log 4$$
+                    $$V(D^*,G) = 2 JSD(p_{data}||p_g)- \log 4$$
+                \item
+                    JSD measures the distance between distributions. This means that with an optimal discriminator, the GAN objective is equivalent to minimizing the distance between the $p_{data}$ and $p_g$ distributions. This means that the generator is trying to generate samples such that they mirror the true distribution of the data.
+            \end{enumerate}
+        \item
+            \begin{enumerate}
+                \item 
+                    $$\max_D V(D,G) = \mathbb E_{x\sim p_{\mathrm{data}}}[\log D(x)] + \mathbb E_{z\sim p_z}[\log(1-D(G(z)))]$$
+                \item
+                    $$\min_G V(D,G) = \mathbb E_{z\sim p_z}[\log(1-D(G(z)))]$$
+                \item
+                    The training loop alternates between 1) training the discriminator as a binary classifier to accurately predict whether a sample is positive or negative (real or generated), and 2) training the generator to generate "hard" negative samples that "fool" the discriminator (it predicts they're real).
+            \end{enumerate}
+        \item \ \\
+            \includegraphics[width = 0.5 \linewidth]{}
+            \includegraphics[width = 0.5 \linewidth]{}
+	\end{enumerate}
 \end{solution}
 
 \newpage
@@ -214,7 +254,9 @@ Your job is to implement K-means and HAC on MNIST and test whether these relativ
 \end{problem}
 
 \begin{solution}
-	Your solution here.
+	\begin{enumerate}
+	    \item 
+	\end{enumerate}
 \end{solution}
 
 \newpage
