@@ -275,6 +275,11 @@ Your job is to implement K-means and HAC on MNIST and test whether these relativ
             Max-linkage doesn't face this problem since it prefers compact clusters, and that's why each cluster has a more representative sample size.\\
         \item
             $$\includegraphics[width = \linewidth]{hw5/img_output/3.7.png}$$
+            The closest HAC variant to K-Means is max-linkage. This exactly agrees with the explanation from the previous part - min-linkage and centroid put all samples into 1 cluster, while max-linkage spreads them out more evenly, just like k-means.
+        \item
+            Clustering is not ideal for digit identification. Even though K-means recovers clusters that look like digits, it has no guarantee of finding the 10 true classes, which is what we saw in the graphs.\\
+            Since clustering is unsupervised, they are not expected to match the true labels. It just groups data by similarity and there is no loss on the cluster identity matching the true label.\\
+            Outliers are problematic especially for max-linkage. Data with class imbalance would be problematic, because one class can dominate others and get assigned multiple clusters and rare classes might be grouped together. Ambiguos digits (i.e. 4 - 9, 1 - 7) will sit between clusters and get assigned arbitrarily since there is no punishment on them not matching the true class.
 	\end{enumerate}
 \end{solution}
 
@@ -321,7 +326,10 @@ Your job is to implement K-means and HAC on MNIST and test whether these relativ
 \end{problem}
 
 \begin{solution}
-	Your solution here.
+	\begin{enumerate}
+	    \item 
+            
+	\end{enumerate}
 \end{solution}
 
 \end{document}
