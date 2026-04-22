@@ -263,6 +263,16 @@ Your job is to implement K-means and HAC on MNIST and test whether these relativ
         \item
             $$\includegraphics[width = 0.5 \linewidth]{hw5/img_output/3.4.png}$$
             Both the standardized and unstandardized cases produce recognizable digits as cluster means, and across the 3 iterations, find all 10 digit classes. The standardized centroids are blurrier, which makes sense since the standardization process scales up low-variance pixels, like edges and corners that are always 0, essentially adding noise to the images.
+        \item
+            $$\includegraphics[width = 0.5 \linewidth]{hw5/img_output/3.5.png}$$
+            Max linkage produces the blurriest clusters. This is because it doesn't chain as explained in 6), and so each cluster will have more representative sample size, and so the mean image won't be as crisp.
+            Min linkage produces crisp clusters and so does centroid. This is because almost all samples are under 1 cluster and the rest of the clusters have only a couple points, so the mean will be very crisp\\
+            HAC only needs 1 run because it's deterministic - it doesn't depend on initialization like k-means.
+        \item
+            The plots show the problem with min-linkage, which is that it prefers elongated clusters. It is not the right fit for this data set, as it is better suited for non-convex class structure. Here, all the images are very similar since they are just black and white pixels of digits so it chains all of them together.\\
+            Centroid faces the same problem since the data is so similar, that the mean of the biggest cluster will be close to the next point and it will pull everything into one.\\
+            Max-linkage doesn't face this problem since it prefers compact clusters, and that's why each cluster has a more representative sample size.\\
+            
 	\end{enumerate}
 \end{solution}
 
