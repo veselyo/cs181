@@ -204,7 +204,37 @@ In this problem, you will be working with one-dimensional Kalman filters, which 
 \newpage
 
 \begin{solution}
-	Your solution here.
+	\begin{enumerate}
+	    \item
+            \begin{enumerate}
+                \item 
+                    $$\alpha_t(z_t) = p(x_{0:t}, z_t)$$
+                    $$p(z_t|x_{0:t}) = p(x_{0:t}, z_t) / p(x_{0:t})$$
+                    $$p(z_t|x_{0:t}) = \alpha_t / p(x_{0:t}) \propto \alpha_t$$
+                    $$\text{We are conditioning on observations only up to time $t$, so the quantity does not relate to $\beta_t(z_t)$,}$$
+                    $$\text{as that relates to future observations. The operation is called filtering.}$$
+                \item
+                    $$x_t = z_t + \gamma_t$$
+                    $$\gamma_t \sim N(0, \sigma_{\gamma}^2)$$
+                    $$p(x_t|z_t) = N(z_t, \sigma_{\gamma}^2)$$
+                \item
+                    $$p(z_t|x_{0:t-1}) = \int p(z_t, z_{t-1}|x_{0:t-1})\ dz_{t-1}$$
+                    $$p(z_t|x_{0:t-1}) = \int p(z_t| z_{t-1},x_{0:t-1})p(z_{t-1}|x_{0:t-1})\ dz_{t-1}$$
+                    $$z_t = z_{t-1} + \epsilon_{t-1}, \epsilon_{t-1} \sim N(0, \sigma_\epsilon^2),$$
+                    $$p(z_t|x_{0:t-1}) = \int N(z_t; z_{t-1}, \sigma_\epsilon^2)N(z_{t-1}; \mu_{t-1}, \sigma_{t-1}^2)\ dz_{t-1}$$
+                    $$p(z_t|x_{0:t-1}) = \int N(z_t -z_{t-1}; 0, \sigma_\epsilon^2)N(z_{t-1}; \mu_{t-1}, \sigma_{t-1}^2)\ dz_{t-1}$$
+                    $$p(z_t|x_{0:t-1}) = N(z_t; \mu_{t-1}, (\sigma_\epsilon^2 + \sigma_{t-1}^2))$$
+                \item
+                    $$p(z_t|x_{0:t})\propto p(x_t|z_t)p(z_t|x_{0:t-1})$$
+                    $$p(z_t|x_{0:t})\propto N(x_t;z_t, \sigma_{\gamma}^2)N(z_t; \mu_{t-1}, (\sigma_\epsilon^2 + \sigma_{t-1}^2))$$
+                    $$p(z_t|x_{0:t})\propto N(z_t; x_t, \sigma_{\gamma}^2)N(z_t; \mu_{t-1}, (\sigma_\epsilon^2 + \sigma_{t-1}^2))$$
+                    $$p(z_t|x_{0:t}) \propto N\left(z_t; \frac{\sigma_\epsilon^2 + \sigma_{t-1}^2}{\sigma_{\gamma}^2+\sigma_\epsilon^2 + \sigma_{t-1}^2}x_t + \frac{\sigma_{\gamma}^2}{\sigma_{\gamma}^2+\sigma_\epsilon^2 + \sigma_{t-1}^2}\mu_{t-1}, \ \left(\frac{1}{\sigma_{\gamma}^2} + \frac{1}{\sigma_\epsilon^2 + \sigma_{t-1}^2}\right)^{-1}\right)$$\\
+                    $$\mu_t = \frac{\sigma_\epsilon^2 + \sigma_{t-1}^2}{\sigma_{\gamma}^2+\sigma_\epsilon^2 + \sigma_{t-1}^2}x_t + \frac{\sigma_{\gamma}^2}{\sigma_{\gamma}^2+\sigma_\epsilon^2 + \sigma_{t-1}^2}\mu_{t-1}$$
+                    $$\sigma_t^2 = \left(\frac{1}{\sigma_{\gamma}^2} + \frac{1}{\sigma_\epsilon^2 + \sigma_{t-1}^2}\right)^{-1}$$   
+            \end{enumerate}
+        \item
+            Since $\frac{\sigma_\epsilon^2 + \sigma_{t-1}^2}{\sigma_{\gamma}^2+\sigma_\epsilon^2 + \sigma_{t-1}^2} + \frac{\sigma_{\gamma}^2}{\sigma_{\gamma}^2+\sigma_\epsilon^2 + \sigma_{t-1}^2} = 1$, $\mu_t$ is a weighted average of the current observation $x_t$ and the previous hidden state's mean $\mu_{t-1}$, which we interpret as a summary of all past observations. They are weighted inversely by their own variance - noisier observation leads to  more weight given to the summary and less to the observation itself, and vice versa. 
+	\end{enumerate}
 \end{solution}
 
 \newpage
@@ -475,6 +505,7 @@ Under this acceptance rule, the sequence of tokens output by speculative decodin
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
 \subsection*{Name}
+Ondrej Vesely
 \subsection*{Collaborators and Resources}
 Whom did you work with, and did you use any resources beyond cs181-textbook and your notes?
 
