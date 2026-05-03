@@ -307,7 +307,16 @@ Note that we are doing infinite-horizon planning to maximize the expected reward
                     $$\includegraphics[width = 0.5 \linewidth]{hw6/img_output/2.1c-iii.png} \includegraphics[width = 0.5 \linewidth]{hw6/img_output/2.1c-iv.png}$$
                 \item
                     $$\includegraphics[width = 0.5 \linewidth]{hw6/img_output/2.1d.png}$$
-                    It takes 5 iterations to complete with all $ct = 0.01, ct = 0.001, ct=0.0001$.
+                    It takes 5 iterations to converge with $ct = 0.01$. It also takes 5 iterations with $ct = 0.001$ and $ct = 0.0001$. This is because we find the optimal policy at iteration 4, and so iteration 5 evaluates the same policy. Our policy evaluation algorithm always starts at the same initialization, and so will always converge to the same value function. The difference in the value function at iterations 4 and 5 will thus be always 0, which will satisfy any positive $ct$. 
+            \end{enumerate}
+        \item
+            \begin{enumerate}[start = 2]
+                \item 
+                    $$\includegraphics[width = 0.5 \linewidth]{hw6/img_output/2.2b-   i.png} \includegraphics[width = 0.5 \linewidth]{hw6/img_output/2.2b-ii.png}$$
+                    $$\includegraphics[width = 0.5 \linewidth]{hw6/img_output/2.2b-iii.png} \includegraphics[width = 0.5 \linewidth]{hw6/img_output/2.2b-iv.png}$$
+                \item
+                    $$\includegraphics[width = 0.5 \linewidth]{hw6/img_output/2.2c.png}$$
+                    With $ct = 0.01$, it takes 25 iterations to converge. It takes 31 iterations for $ct = 0.001$, and 38 for $ct = 0.0001$.
             \end{enumerate}
 	\end{enumerate}
 \end{solution}
