@@ -387,6 +387,7 @@ Note that we are doing infinite-horizon planning to maximize the expected reward
 	First, I implemented the vanilla version and played around with the parameters and wasn't getting very good results. So I followed the advice and added epsilon decay. I assumed I will start from pure random exploration, and tried to find a decay that will make my agent perform well:
     $$\includegraphics[width = 0.5 \linewidth]{hw6/img_output/3-i.png}$$
     It's clear that the faster decay, the earlier the agent starts getting good results but has very high variance, and if the decay is too slow, then we still have too much randomness by the end. $decay = 0.9$ seemed like a great middle ground.\\
+    $$\includegraphics[width = 0.5 \linewidth]{hw6/img_output/3-ii.png}\includegraphics[width = 0.5 \linewidth]{hw6/img_output/3-iii.png}$$
     I also tried alphas and gammas in the same way. With alpha too small, the learning rate is too slow for the model to produce results, and with high alpha, the variance is too high, as one bad outcome has too much weight. $alpha = 0.1$ seemed like the best balance. With small gamma, the agent doesn't optimize for long streaks but rather for immediate results, so it never reaches a very high score. With gamma too high, results are too noisy, as the agent can rely too much on random future outcomes. $gamma = 0.9$ seemed like a good middle ground.
 \end{solution}
 
