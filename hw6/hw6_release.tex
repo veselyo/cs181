@@ -321,6 +321,14 @@ Note that we are doing infinite-horizon planning to maximize the expected reward
         \item
             $$\includegraphics[width = 0.5 \linewidth]{hw6/img_output/2.3-i.png} \includegraphics[width = 0.5 \linewidth]{hw6/img_output/2.3-ii.png}$$
             $$\includegraphics[width = 0.5 \linewidth]{hw6/img_output/2.3-iii.png} \includegraphics[width = 0.5 \linewidth]{hw6/img_output/2.3-iv.png}$$
+            The graphs are from left to right according to $\gamma$ from $0.6$ to $0.9$. When the future rewards are less discounted, the policy prioritizes getting to the high reward spot ($+50$) as soon as possible to maximize long-term gain, even if its through more negative reward spots $(-20, -50)$, taking a short-term loss. The higher the gamma, the less risk-averse the policy is thanks to the long-term gain possibility. The lower the gamma, the more short-term oriented the model is, even choosing to get to the the $(+4)$ square when close to it, since the future is so discounted.
+        \item
+            Overall, the model will become much more risk averse, avoiding short-term losses more, since the repeated long-term gain is taken away.\\
+            With very high gamma, I would expect the policy to take the least negative route to the highest yield square, no matter the distance. It would try to avoid landing in other positive squares that earn less, since it can get a higher reward elsewhere.\\
+            With low gamma, the model will become more short-term oriented, and will simply seek the nearest positive square, not willing to take any negative routes.
+        \item
+            Our approach is very efficient, since we don't need to sample the environment like in RL to figure out its dynamics. We can also get extremely accurate solutions by having the exact model of the environment.\\
+            We have to consider how we came up with our model; if our model is wrong, then so will our solutions. RL is able to learn the environment from real experience. Reward design, which also applies to RL, is crucial - we need to design a reward signal that actually drives the objective. If we didn't accurately do that, then our solution will be wrong for the goal no matter the approach.
 	\end{enumerate}
 \end{solution}
 
@@ -376,7 +384,10 @@ Note that we are doing infinite-horizon planning to maximize the expected reward
     
 
 \begin{solution}
-	Your solution here.
+	First, I implemented the vanilla version and played around with the parameters and wasn't getting very good results. So I followed the advice and added epsilon decay. I assumed I will start from pure random exploration, and tried to find a decay that will make my agent perform well:
+    $$\includegraphics[width = 0.5 \linewidth]{hw6/img_output/3-i.png}$$
+    It's clear that the faster decay, the earlier the agent starts getting good results but has very high variance, and if the decay is too slow, then we still have too much randomness by the end. $decay = 0.9$ seemed like a great middle ground.\\
+    I also tried alphas and gammas in the same way. With alpha too small, the learning rate is too slow for the model to produce results, and with high alpha, the variance is too high, as one bad outcome has too much weight. $alpha = 0.1$ seemed like the best balance. With small gamma, the agent doesn't optimize for long streaks but rather for immediate results, so it never reaches a very high score. With gamma too high, results are too noisy, as the agent can rely too much on random future outcomes. $gamma = 0.9$ seemed like a good middle ground.
 \end{solution}
 
 \newpage
